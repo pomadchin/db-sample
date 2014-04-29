@@ -1,3 +1,3 @@
 package core.db
 
-case class ManagerTask(source: Int, target: Int) extends ILink
+case class ManagerTask(sourceId: Int, targetId: Int) extends ILink
