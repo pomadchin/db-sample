@@ -1,4 +1,4 @@
-bd-sample
+db-sample
 =========
 
-Scala bd Sample
+Scala db Sample
