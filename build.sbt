@@ -1,4 +1,4 @@
-name := "bd-sample"
+name := "db-sample"
 
 version := "0.1"
 
