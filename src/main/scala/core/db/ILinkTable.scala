@@ -5,7 +5,7 @@ package core.db
  *
  * T -- Тип связей, хранящихся в таблице
  */
-trait ILinkTable[T <: ILink] {
+trait ILinkTable[T <: ILink] extends Serializable {
 
   var list = List[T]()
 

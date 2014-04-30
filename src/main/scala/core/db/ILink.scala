@@ -3,7 +3,7 @@ package core.db
 /**
  * Интерфейс для связей между объектами
  */
-trait ILink {
+trait ILink extends Serializable {
   val sourceId: Int
   val targetId: Int
 }

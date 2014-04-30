@@ -6,7 +6,7 @@ package core.db
  *
  * T - Тип объектов, хранимых в таблице
  */
-trait IEntityTable[T] {
+trait IEntityTable[T] extends Serializable {
 
   var list: List[T] = List[T]()
 

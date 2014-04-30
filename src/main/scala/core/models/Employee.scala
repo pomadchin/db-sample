@@ -1,3 +1,3 @@
 package core.models
 
-case class Employee(fio: String, salary: Double)
+case class Employee(fio: String, salary: Double) extends Serializable
