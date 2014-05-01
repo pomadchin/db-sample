@@ -1,3 +1,3 @@
 package core.models
 
-case class Task(name: String) extends Serializable
+case class Task(name: String)

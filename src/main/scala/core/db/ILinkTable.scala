@@ -1,11 +1,13 @@
 package core.db
+import scala.language.postfixOps
 
 /**
  * Таблица связей между объектами
  *
  * T -- Тип связей, хранящихся в таблице
  */
-trait ILinkTable[T <: ILink] extends Serializable {
+trait ILinkTable[T <: ILink] { outer =>
+  val fileName = "tmp/" + outer.getClass.getName.split("\\$").last
 
   var list = List[T]()
 

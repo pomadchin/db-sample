@@ -13,3 +13,5 @@ resolvers ++= Seq(
   "Sonatype OSS Releases"  at "http://oss.sonatype.org/content/repositories/releases/",
   "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
 )
+
+scalacOptions ++= Seq("-feature", "-deprecation")

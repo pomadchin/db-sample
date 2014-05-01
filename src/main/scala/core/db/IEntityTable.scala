@@ -1,12 +1,15 @@
 package core.db
 
+import scala.language.postfixOps
+
 /**
  * Интерфейс основной таблицы,
  * хранящей список объектов
  *
  * T - Тип объектов, хранимых в таблице
  */
-trait IEntityTable[T] extends Serializable {
+trait IEntityTable[T] { outer =>
+  val fileName = "tmp/" + outer.getClass.getName.split("\\$").last
 
   var list: List[T] = List[T]()
 

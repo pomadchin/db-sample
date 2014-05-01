@@ -1,4 +1,4 @@
 package core.models
 
-case class Manager(fio: String, position: String) extends Serializable
+case class Manager(fio: String, position: String)
 
