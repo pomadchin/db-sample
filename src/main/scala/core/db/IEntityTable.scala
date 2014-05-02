@@ -8,7 +8,7 @@ import scala.language.postfixOps
  *
  * T - Тип объектов, хранимых в таблице
  */
-trait IEntityTable[T] { outer =>
+trait IEntityTable[T <: Identifiable] { outer =>
   val fileName = "tmp/" + outer.getClass.getName.split("\\$").last
 
   var list: List[T] = List[T]()
@@ -20,8 +20,9 @@ trait IEntityTable[T] { outer =>
    * @return Идентификатор, присвоенный объекту
    */
   def Add(obj: T): Int = {
+    obj.id = Option(list.length)
     list = list :+ obj
-    list.length - 1
+    obj.id.get
   }
 
   /**

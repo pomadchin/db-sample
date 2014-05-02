@@ -4,6 +4,7 @@ import core.models._
 import java.nio.file.{Paths, Files}
 import scala.pickling._
 import binary._
+import scalafx.collections.ObservableBuffer
 
 object EmployeeTable extends IEntityTable[Employee] {
   def write =
