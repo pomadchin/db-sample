@@ -58,7 +58,7 @@ object Main extends JFXApp {
             println(employee.toString + " " + newLastSalaryVal)
             println(employee.id.getOrElse(0).toString)
           }
-          prefWidth = 180
+          prefWidth = 100
         },
         new TableColumn[Employee, Boolean] {
           text = "action"
@@ -67,49 +67,41 @@ object Main extends JFXApp {
             alignment = Pos.CENTER
             item.onChange((_, _, p) =>
               if(p) {
-                graphic = new Button("Delete") {
-                  onAction = (ae: ActionEvent) => {
-                    println("empty: " + empty.value)
-                    println("index: " + index.value)
+                  graphic = new HBox {
+                    content = List(
+                      new Button("Delete") {
+                        onAction = (ae: ActionEvent) => {
+                          employeeTable.DeleteByListId(index.value)
+                          employeeTable.write
+                          employeeTable.read
 
-                    employeeTable.DeleteByListId(index.value)
-                    employeeTable.write
-                    employeeTable.read
+                          employeeTableModel.clear
+                          employeeTableModel ++= employeeTable.list
 
-                    employeeTableModel.clear
-                    employeeTableModel ++= employeeTable.list
+                          fioTextField.clear
+                          salaryTextField.clear
+                        }
+                      },
+                      new Button("Add Tasks") {
+                        onAction = (ae: ActionEvent) => {
+                          employeeTable.DeleteByListId(index.value)
+                          employeeTable.write
+                          employeeTable.read
 
-                    fioTextField.clear
-                    salaryTextField.clear
+                          employeeTableModel.clear
+                          employeeTableModel ++= employeeTable.list
+
+                          fioTextField.clear
+                          salaryTextField.clear
+                        }
+                      }
+                    )
+                    spacing = 10
+                    alignment = Pos.CENTER
+                    //padding = Insets(10, 10, 10, 10)
                   }
                 }
-              }
-            )
-
-            //println("empty_s: " + empty.value)
-
-            //println(tableRow)
-            //println(tableView)
-            //if(empty.value) {
-
-
-            /*  graphic = new Button("Delete") {
-                onAction = (ae: ActionEvent) => {
-                  println("empty: " + empty.value)
-                  println("index: " + index.value)
-
-                  employeeTable.DeleteByListId(index.value)
-                  employeeTable.write
-                  employeeTable.read
-
-                  employeeTableModel.clear
-                  employeeTableModel ++= employeeTable.list
-
-                  fioTextField.clear
-                  salaryTextField.clear
-                }
-              }*/
-            //}
+              )
           }
           prefWidth = 180
         }
@@ -124,7 +116,7 @@ object Main extends JFXApp {
 
     val salaryTextField = new TextField {
       promptText = "salary"
-      maxWidth = 140
+      maxWidth = 180
     }
 
     val addButton = new Button("Add") {
@@ -146,6 +138,7 @@ object Main extends JFXApp {
 
     val hbox = new HBox {
       content = List(fioTextField, salaryTextField, addButton)
+      spacing = 10
     }
 
     scene = new Scene {
