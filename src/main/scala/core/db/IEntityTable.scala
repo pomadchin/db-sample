@@ -20,9 +20,14 @@ trait IEntityTable[T <: Identifiable] { outer =>
    * @return Идентификатор, присвоенный объекту
    */
   def Add(obj: T): Int = {
-    obj.id = Option(list.length)
+    if(list.length > 0) {
+      obj.id = Option(list.last.id.getOrElse(0) + 1)
+    } else {
+      obj.id = Option(0)
+    }
+
     list = list :+ obj
-    obj.id.get
+    obj.id.getOrElse(0)
   }
 
   /**
@@ -32,7 +37,9 @@ trait IEntityTable[T <: Identifiable] { outer =>
    * @param id Идентификатор объекта
    * @return Полученный объект либо null, если указанный объект не найден
    */
-  def Get(id: Int): T = list(id)
+  def Get(id: Int): T = list.filter(_.id.getOrElse(0) == id) head
+
+  def GetByListId(id: Int): T = list(id)
 
   /**
    * Удаление объекта по его
@@ -40,6 +47,7 @@ trait IEntityTable[T <: Identifiable] { outer =>
    *
    * @param id Идентификатор удаляемого объекта
    */
-  def Delete(id: Int) = list = list patch(id, Nil, 1)
+  def Delete(id: Int) = list = list.filter(_.id.getOrElse(0) != id)
 
+  def DeleteByListId(id: Int) = list = list patch(id, Nil, 1)
 }

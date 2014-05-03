@@ -5,15 +5,16 @@ import scalafx.application.JFXApp
 import scalafx.application.JFXApp.PrimaryStage
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
-import scalafx.geometry.Insets
+import scalafx.geometry.{Pos, Insets}
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
 import scalafx.scene.control.TableColumn._
 import scalafx.scene.layout._
 import scalafx.scene.control._
 import scalafx.scene.text.Font
-import scalafx.util.converter.DefaultStringConverter
+import scalafx.util.converter._
 import scalafx.Includes._
+import scalafx.beans.property._
 
 
 object Main extends JFXApp {
@@ -27,7 +28,7 @@ object Main extends JFXApp {
 
   stage = new PrimaryStage {
     title = "Scala db Sample"
-    val label = new Label("EmployeeTaskTable") {
+    val label = new Label("EmployeeTable") {
       font = Font("Arial", 20)
     }
 
@@ -56,6 +57,59 @@ object Main extends JFXApp {
             // Update current person data set
             println(employee.toString + " " + newLastSalaryVal)
             println(employee.id.getOrElse(0).toString)
+          }
+          prefWidth = 180
+        },
+        new TableColumn[Employee, Boolean] {
+          text = "action"
+          cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
+          cellFactory = _ => new TableCell[Employee, Boolean] {
+            alignment = Pos.CENTER
+            item.onChange((_, _, p) =>
+              if(p) {
+                graphic = new Button("Delete") {
+                  onAction = (ae: ActionEvent) => {
+                    println("empty: " + empty.value)
+                    println("index: " + index.value)
+
+                    employeeTable.DeleteByListId(index.value)
+                    employeeTable.write
+                    employeeTable.read
+
+                    employeeTableModel.clear
+                    employeeTableModel ++= employeeTable.list
+
+                    fioTextField.clear
+                    salaryTextField.clear
+                  }
+                }
+              }
+            )
+
+            //println("empty_s: " + empty.value)
+
+            //println(tableRow)
+            //println(tableView)
+            //if(empty.value) {
+
+
+            /*  graphic = new Button("Delete") {
+                onAction = (ae: ActionEvent) => {
+                  println("empty: " + empty.value)
+                  println("index: " + index.value)
+
+                  employeeTable.DeleteByListId(index.value)
+                  employeeTable.write
+                  employeeTable.read
+
+                  employeeTableModel.clear
+                  employeeTableModel ++= employeeTable.list
+
+                  fioTextField.clear
+                  salaryTextField.clear
+                }
+              }*/
+            //}
           }
           prefWidth = 180
         }
