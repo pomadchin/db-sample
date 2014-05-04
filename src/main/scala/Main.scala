@@ -25,7 +25,6 @@ object Main extends JFXApp {
   val employeeTableModel = new ObservableBuffer[Employee]
   employeeTableModel ++= employeeTable.list
 
-
   stage = new PrimaryStage {
     title = "Scala db Sample"
     val label = new Label("EmployeeTable") {
@@ -72,27 +71,13 @@ object Main extends JFXApp {
                       new Button("Delete") {
                         onAction = (ae: ActionEvent) => {
                           employeeTable.DeleteByListId(index.value)
-                          employeeTable.write
-                          employeeTable.read
-
-                          employeeTableModel.clear
-                          employeeTableModel ++= employeeTable.list
-
-                          fioTextField.clear
-                          salaryTextField.clear
+                          refreshTableView
                         }
                       },
                       new Button("Add Tasks") {
                         onAction = (ae: ActionEvent) => {
                           employeeTable.DeleteByListId(index.value)
-                          employeeTable.write
-                          employeeTable.read
-
-                          employeeTableModel.clear
-                          employeeTableModel ++= employeeTable.list
-
-                          fioTextField.clear
-                          salaryTextField.clear
+                          refreshTableView
                         }
                       }
                     )
@@ -116,7 +101,7 @@ object Main extends JFXApp {
 
     val salaryTextField = new TextField {
       promptText = "salary"
-      maxWidth = 180
+      maxWidth = 100
     }
 
     val addButton = new Button("Add") {
@@ -125,14 +110,7 @@ object Main extends JFXApp {
         println(employee.toString)
 
         employeeTable.Add(employee)
-        employeeTable.write
-        employeeTable.read
-
-        employeeTableModel.clear
-        employeeTableModel ++= employeeTable.list
-
-        fioTextField.clear
-        salaryTextField.clear
+        refreshTableView
       }
     }
 
@@ -147,6 +125,17 @@ object Main extends JFXApp {
         spacing = 10
         padding = Insets(10, 10, 10, 10)
       }
+    }
+
+    def refreshTableView = {
+      employeeTable write
+      employeeTable.read
+
+      employeeTableModel.clear
+      employeeTableModel ++= employeeTable.list
+
+      fioTextField.clear
+      salaryTextField.clear
     }
   }
 }
