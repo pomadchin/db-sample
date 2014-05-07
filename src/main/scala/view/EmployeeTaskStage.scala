@@ -18,7 +18,7 @@ import scalafx.Includes._
 import scalafx.scene.shape.Rectangle
 import scalafx.stage.Stage
 
-class EmployeeTaskStage(id: Option[Int] = None) extends Stage {
+class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
   val employeeTable     = EmployeeTable
   val employeeTaskTable = EmployeeTaskTable
   val taskTable         = TaskTable
@@ -27,7 +27,7 @@ class EmployeeTaskStage(id: Option[Int] = None) extends Stage {
   employeeTaskTable.read
   taskTable.read
 
-  val taskIds = employeeTaskTable.list.filter(_.sourceId == id.getOrElse(0)).map(_.targetId)
+  val taskIds = employeeTaskTable.list.filter(_.sourceId == employeeId.getOrElse(0)).map(_.targetId)
 
   val taskTableModel = new ObservableBuffer[Task]
   taskTableModel ++= taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
@@ -63,24 +63,10 @@ class EmployeeTaskStage(id: Option[Int] = None) extends Stage {
                 content = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
-                      println(1)
-                    }
-                  },
-                  new Button("Add Tasks") {
-                    onAction = (ae: ActionEvent) => {
-
-                      val tasksStage = new Stage {
-                        scene = new Scene {
-                          content = Set(new Rectangle {
-                            x = 25
-                            y = 40
-                            width = 100
-                            height = 100
-                          })
-                        }
+                      if(index.value < taskTableModel.length) {
+                        taskTable.Delete(taskTableModel.get(index.value).id.getOrElse(0))
+                        refreshTableView
                       }
-
-                      tasksStage.show
                     }
                   }
                 )
@@ -97,28 +83,22 @@ class EmployeeTaskStage(id: Option[Int] = None) extends Stage {
     //editable = true
   }
 
-  val fioTextField = new TextField {
-    promptText = "fio"
+  val nameTextField = new TextField {
+    promptText = "name"
     maxWidth = 180
-  }
-
-  val salaryTextField = new TextField {
-    promptText = "salary"
-    maxWidth = 100
   }
 
   val addButton = new Button("Add") {
     onAction = (_:ActionEvent) => {
-      val employee = Employee(fioTextField.getText, salaryTextField.getText.toDouble)
-      println(employee.toString)
+      val task = Task(nameTextField.getText)
+      employeeTaskTable.AddLink(employeeId.getOrElse(0), taskTable.Add(task))
 
-      employeeTable.Add(employee)
       refreshTableView
     }
   }
 
   val hbox = new HBox {
-    content = List(fioTextField, salaryTextField, addButton)
+    content = List(nameTextField, addButton)
     spacing = 10
   }
 
@@ -131,6 +111,14 @@ class EmployeeTaskStage(id: Option[Int] = None) extends Stage {
   }
 
   def refreshTableView = {
-    println(1)
+    taskTable.write
+    employeeTaskTable.write
+    taskTable.read
+    employeeTaskTable.read
+
+    val taskIds = employeeTaskTable.list.filter(_.sourceId == employeeId.getOrElse(0)).map(_.targetId)
+
+    taskTableModel.clear
+    taskTableModel ++= taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
   }
 }

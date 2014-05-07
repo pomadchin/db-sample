@@ -71,8 +71,10 @@ class EmployeeStage extends PrimaryStage {
                 content = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
-                      employeeTable.DeleteByListId(index.value)
-                      refreshTableView
+                      if(index.value < employeeTableModel.length) {
+                        employeeTable.Delete(employeeTableModel.get(index.value).id.getOrElse(0))
+                        refreshTableView
+                      }
                     }
                   },
                   new Button("Add Tasks") {
@@ -110,7 +112,6 @@ class EmployeeStage extends PrimaryStage {
   val addButton = new Button("Add") {
     onAction = (_:ActionEvent) => {
       val employee = Employee(fioTextField.getText, salaryTextField.getText.toDouble)
-      println(employee.toString)
 
       employeeTable.Add(employee)
       refreshTableView

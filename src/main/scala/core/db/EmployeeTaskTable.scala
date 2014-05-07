@@ -7,8 +7,16 @@ import scalafx.collections.ObservableBuffer
 
 object EmployeeTaskTable extends ILinkTable[EmployeeTask] {
   def AddLink(sourceId: Int, targetId: Int) = {
-    DeleteLink(sourceId, targetId)
-    list :+ EmployeeTask(sourceId, targetId)
+    //DeleteLink(sourceId, targetId)
+    val task = EmployeeTask(sourceId, targetId)
+
+    if(list.length > 0) {
+      task.id = Option(list.last.id.getOrElse(0) + 1)
+    } else {
+      task.id = Option(0)
+    }
+
+    list = list :+ task
   }
 
   def write =
