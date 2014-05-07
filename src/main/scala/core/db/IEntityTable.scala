@@ -39,8 +39,6 @@ trait IEntityTable[T <: Identifiable] { outer =>
    */
   def Get(id: Int): T = list.filter(_.id.getOrElse(0) == id) head
 
-  def GetByListId(id: Int): T = list(id)
-
   /**
    * Удаление объекта по его
    * идентификатору
@@ -48,6 +46,4 @@ trait IEntityTable[T <: Identifiable] { outer =>
    * @param id Идентификатор удаляемого объекта
    */
   def Delete(id: Int) = list = list.filter(_.id.getOrElse(0) != id)
-
-  def DeleteByListId(id: Int) = list = list patch(id, Nil, 1)
 }

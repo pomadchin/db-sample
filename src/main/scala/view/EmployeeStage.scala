@@ -21,8 +21,13 @@ import scalafx.scene.shape.Rectangle
 import scalafx.stage.Stage
 
 class EmployeeStage extends PrimaryStage {
-  val employeeTable = EmployeeTable
+  val employeeTable     = EmployeeTable
+  val employeeTaskTable = EmployeeTaskTable
+  val taskTable         = TaskTable
+
   employeeTable.read
+  employeeTaskTable.read
+  taskTable.read
 
   val employeeTableModel = new ObservableBuffer[Employee]
   employeeTableModel ++= employeeTable.list
@@ -71,17 +76,26 @@ class EmployeeStage extends PrimaryStage {
                 content = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
+                      val ei = employeeTableModel.get(index.value).id.getOrElse(0)
+
                       if(index.value < employeeTableModel.length) {
-                        employeeTable.Delete(employeeTableModel.get(index.value).id.getOrElse(0))
+                        employeeTable.Delete(ei)
+
+                        // cascade remove
+                        val employeeTasks = employeeTaskTable.list.filter(_.sourceId == ei)
+                        val employeeTaskIds = employeeTasks.map(_.targetId)
+                        val tasks = taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect employeeTaskIds).length > 0)
+
+                        tasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
+                        employeeTasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
+
                         refreshTableView
                       }
                     }
                   },
                   new Button("Add Tasks") {
                     onAction = (ae: ActionEvent) => {
-
-                      val tasksStage = new EmployeeTaskStage(employeeTable.GetByListId(index.value).id)
-
+                      val tasksStage = new EmployeeTaskStage(employeeTableModel.get(index.value).id)
                       tasksStage.show
                     }
                   }
@@ -133,7 +147,11 @@ class EmployeeStage extends PrimaryStage {
 
   def refreshTableView = {
     employeeTable.write
+    taskTable.write
+    employeeTaskTable.write
     employeeTable.read
+    taskTable.read
+    employeeTaskTable.read
 
     employeeTableModel.clear
     employeeTableModel ++= employeeTable.list

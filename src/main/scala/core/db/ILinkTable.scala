@@ -17,7 +17,13 @@ trait ILinkTable[T <: ILink] { outer =>
    * @param link Добавляемая связь
    */
   def AddLink(link: T) = {
-    DeleteLink(link.sourceId, link.targetId)
+    //DeleteLink(link.sourceId, link.targetId)
+    if(list.length > 0) {
+      link.id = Option(list.last.id.getOrElse(0) + 1)
+    } else {
+      link.id = Option(0)
+    }
+
     list = list :+ link
   }
 
