@@ -6,6 +6,7 @@ A small db sample, with a [ScalaFX](https://github.com/scalafx/scalafx-ensemble)
 
 * The project uses [sbt](http://www.scala-sbt.org/)
 * To generate IntelijIDEA project just use `sbt idea-gen`
+* To run test use `sbt test`
 * To generate a jar file use `sbt assembly`
 * Enjoy this sample!
 
