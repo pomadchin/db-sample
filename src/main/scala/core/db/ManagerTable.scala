@@ -17,4 +17,3 @@ object ManagerTable extends IEntityTable[Manager] {
     }
   }
 }
-

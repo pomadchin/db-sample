@@ -7,4 +7,3 @@ case class Manager(fio: String, position: String) extends Identifiable {
   val vFio = new StringProperty(this, "fio", fio)
   val vPosition = new StringProperty(this, "position", position)
 }
-
