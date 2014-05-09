@@ -3,5 +3,5 @@ import view._
 
 
 object Main extends JFXApp {
-  stage = new EmployeeStage
+  stage = new MainStage
 }

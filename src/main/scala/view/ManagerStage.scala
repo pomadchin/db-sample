@@ -2,7 +2,6 @@ package view
 
 import core.db._
 import core.models._
-import scalafx.application.JFXApp.PrimaryStage
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
 import scalafx.geometry.{Pos, Insets}
@@ -15,9 +14,8 @@ import scalafx.scene.text.Font
 import scalafx.util.converter._
 import scalafx.beans.property._
 import scalafx.Includes._
-import scalafx.stage.Stage
 
-class ManagerStage extends Stage {
+class ManagerStage extends VStage {
   val managerTable     = ManagerTable
   val managerTaskTable = ManagerTaskTable
   val taskTable        = TaskTable
@@ -30,16 +28,22 @@ class ManagerStage extends Stage {
   managerTableModel ++= managerTable.list
 
   title = "Scala db Sample"
-  val label = new Label("ManagerTable") {
+  val label = new Label("Manager Table") {
     font = Font("Arial", 20)
   }
 
   val table = new TableView[Manager](managerTableModel) {
     columns ++= List(
       new TableColumn[Manager, String] {
-        text = "fio"
+        text = "Id"
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = _ => new TextFieldTableCell[Manager, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        prefWidth = 40
+      },
+      new TableColumn[Manager, String] {
+        text = "Name"
         cellValueFactory = { _.value.vFio }
-        cellFactory = _ => new TextFieldTableCell[Manager, String] (new DefaultStringConverter())
+        cellFactory = _ => new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Manager, String]) => {
           val manager = evt.rowValue
           val newLastFioVal = evt.newValue
@@ -50,7 +54,7 @@ class ManagerStage extends Stage {
         prefWidth = 180
       },
       new TableColumn[Manager, String] {
-        text = "position"
+        text = "Position"
         cellValueFactory = { _.value.vPosition }
         cellFactory = _ => new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Manager, String]) => {
@@ -60,10 +64,10 @@ class ManagerStage extends Stage {
           println(manager.toString + " " + newLastPositionVal)
           println(manager.id.getOrElse(0).toString)
         }
-        prefWidth = 100
+        prefWidth = 180
       },
       new TableColumn[Manager, Boolean] {
-        text = "action"
+        text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Manager, Boolean] {
           alignment = Pos.CENTER
@@ -84,7 +88,10 @@ class ManagerStage extends Stage {
                         val tasks = taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect managerTaskIds).length > 0)
 
                         tasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
-                        managerTasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
+                        managerTasks.foreach(t => {
+                          managerTaskTable.DeleteLink(mi, t.id.getOrElse(0))
+                          taskTable.Delete(t.id.getOrElse(0))
+                        })
 
                         refreshTableView
                       }
@@ -92,7 +99,7 @@ class ManagerStage extends Stage {
                   },
                   new Button("Add Tasks") {
                     onAction = (ae: ActionEvent) => {
-                      val tasksStage = new EmployeeTaskStage(managerTableModel.get(index.value).id)
+                      val tasksStage = new ManagerTaskStage(managerTableModel.get(index.value).id)
                       tasksStage.show
                     }
                   }
@@ -111,13 +118,13 @@ class ManagerStage extends Stage {
   }
 
   val fioTextField = new TextField {
-    promptText = "fio"
+    promptText = "Name"
     maxWidth = 180
   }
 
   val positionTextField = new TextField {
-    promptText = "position"
-    maxWidth = 100
+    promptText = "Position"
+    maxWidth = 180
   }
 
   val addButton = new Button("Add") {
@@ -134,12 +141,14 @@ class ManagerStage extends Stage {
     spacing = 10
   }
 
+  val vbox = new VBox {
+    content = List(label, table, hbox)
+    spacing = 10
+    padding = Insets(10, 10, 10, 10)
+  }
+
   scene = new Scene {
-    content = new VBox {
-      content = List(label, table, hbox)
-      spacing = 10
-      padding = Insets(10, 10, 10, 10)
-    }
+    content = vbox
   }
 
   def refreshTableView = {

@@ -3,7 +3,6 @@ package core.db
 import scala.pickling._
 import binary._
 import java.nio.file.{Files, Paths}
-import scalafx.collections.ObservableBuffer
 
 object ManagerTaskTable extends ILinkTable[ManagerTask] {
   def AddLink(sourceId: Int, targetId: Int) = {
@@ -22,6 +21,11 @@ object ManagerTaskTable extends ILinkTable[ManagerTask] {
   def write =
     Files.write(Paths.get(fileName), list.pickle.value)
 
-  def read =
-    list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[ManagerTask]]
+  def read = {
+    try {
+      list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[ManagerTask]]
+    } catch {
+      case e: Exception => write
+    }
+  }
 }

@@ -14,24 +14,26 @@ import scalafx.scene.text.Font
 import scalafx.util.converter._
 import scalafx.beans.property._
 import scalafx.Includes._
-import scalafx.stage.Stage
 
-class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
-  val managerTable     = ManagerTable
+class TaskStage extends VStage {
+
+  val taskTable = TaskTable
+  val employeeTaskTable = EmployeeTaskTable
   val managerTaskTable = ManagerTaskTable
-  val taskTable        = TaskTable
 
-  managerTable.read
-  managerTaskTable.read
   taskTable.read
-
-  val taskIds = managerTaskTable.list.filter(_.sourceId == managerId.getOrElse(0)).map(_.targetId)
+  employeeTaskTable.read
+  managerTaskTable.read
 
   val taskTableModel = new ObservableBuffer[Task]
-  taskTableModel ++= taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
+  taskTableModel ++= taskTable.list
 
   title = "Scala db Sample"
-  val label = new Label("Manager Task Table") {
+  val label = new Label("Task Table") {
+    font = Font("Arial", 20)
+  }
+
+  val emptyLabel = new Label(" ") {
     font = Font("Arial", 20)
   }
 
@@ -48,13 +50,13 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
         cellValueFactory = { _.value.vName }
         cellFactory = _ => new TextFieldTableCell[Task, String] (new DefaultStringConverter())
         onEditCommit = (evt: CellEditEvent[Task, String]) => {
-          val employee = evt.rowValue
-          val newLastFioVal = evt.newValue
+          val task = evt.rowValue
+          val newNameVal = evt.newValue
           // Update current person data set
-          println(employee.toString + " " + newLastFioVal)
-          println(employee.id.getOrElse(0).toString)
+          println(task.toString + " " + newNameVal)
+          println(task.id.getOrElse(0).toString)
         }
-        prefWidth = 180
+        prefWidth = 270
       },
       new TableColumn[Task, Boolean] {
         text = "Action"
@@ -67,9 +69,18 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
                 content = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
+                      val ti = taskTableModel.get(index.value).id.getOrElse(0)
+
                       if(index.value < taskTableModel.length) {
-                        managerTaskTable.DeleteLink(managerId.getOrElse(0), taskTableModel.get(index.value).id.getOrElse(0))
-                        taskTable.Delete(taskTableModel.get(index.value).id.getOrElse(0))
+                        taskTable.Delete(ti)
+
+                        // cascade remove
+                        val employeeTasks = employeeTaskTable.list.filter(_.targetId == ti)
+                        val managerTasks = managerTaskTable.list.filter(_.targetId == ti)
+
+                        managerTasks.foreach(t => managerTaskTable.DeleteLink(t.sourceId, t.targetId))
+                        employeeTasks.foreach(t => employeeTaskTable.DeleteLink(t.sourceId, t.targetId))
+
                         refreshTableView
                       }
                     }
@@ -82,33 +93,14 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
             }
           )
         }
-        prefWidth = 180
+        prefWidth = 270
       }
     )
     //editable = true
   }
 
-  val nameTextField = new TextField {
-    promptText = "Name"
-    maxWidth = 180
-  }
-
-  val addButton = new Button("Add") {
-    onAction = (_:ActionEvent) => {
-      val task = Task(nameTextField.getText)
-      managerTaskTable.AddLink(managerId.getOrElse(0), taskTable.Add(task))
-
-      refreshTableView
-    }
-  }
-
-  val hbox = new HBox {
-    content = List(nameTextField, addButton)
-    spacing = 10
-  }
-
   val vbox = new VBox {
-    content = List(label, table, hbox)
+    content = List(label, table, emptyLabel)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -119,15 +111,13 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
 
   def refreshTableView = {
     taskTable.write
+    employeeTaskTable.write
     managerTaskTable.write
     taskTable.read
+    employeeTaskTable.read
     managerTaskTable.read
 
-    val taskIds = managerTaskTable.list.filter(_.sourceId == managerId.getOrElse(0)).map(_.targetId)
-
     taskTableModel.clear
-    taskTableModel ++= taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
-
-    nameTextField.clear
+    taskTableModel ++= taskTable.list
   }
 }

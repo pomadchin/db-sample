@@ -2,7 +2,6 @@ package view
 
 import core.db._
 import core.models._
-import scalafx.application.JFXApp.PrimaryStage
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
 import scalafx.geometry.{Pos, Insets}
@@ -15,10 +14,8 @@ import scalafx.scene.text.Font
 import scalafx.util.converter._
 import scalafx.beans.property._
 import scalafx.Includes._
-import scalafx.scene.shape.Rectangle
-import scalafx.stage.Stage
 
-class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
+class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
   val employeeTable     = EmployeeTable
   val employeeTaskTable = EmployeeTaskTable
   val taskTable         = TaskTable
@@ -33,14 +30,20 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
   taskTableModel ++= taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
 
   title = "Scala db Sample"
-  val label = new Label("EmployeeTaskTable") {
+  val label = new Label("Employee Task Table") {
     font = Font("Arial", 20)
   }
 
   val table = new TableView[Task](taskTableModel) {
     columns ++= List(
       new TableColumn[Task, String] {
-        text = "name"
+        text = "Id"
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        prefWidth = 40
+      },
+      new TableColumn[Task, String] {
+        text = "Name"
         cellValueFactory = { _.value.vName }
         cellFactory = _ => new TextFieldTableCell[Task, String] (new DefaultStringConverter())
         onEditCommit = (evt: CellEditEvent[Task, String]) => {
@@ -53,7 +56,7 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
         prefWidth = 180
       },
       new TableColumn[Task, Boolean] {
-        text = "action"
+        text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Task, Boolean] {
           alignment = Pos.CENTER
@@ -64,6 +67,7 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
                       if(index.value < taskTableModel.length) {
+                        employeeTaskTable.DeleteLink(employeeId.getOrElse(0), taskTableModel.get(index.value).id.getOrElse(0))
                         taskTable.Delete(taskTableModel.get(index.value).id.getOrElse(0))
                         refreshTableView
                       }
@@ -84,7 +88,7 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
   }
 
   val nameTextField = new TextField {
-    promptText = "name"
+    promptText = "Name"
     maxWidth = 180
   }
 
@@ -102,12 +106,14 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends Stage {
     spacing = 10
   }
 
+  val vbox = new VBox {
+    content = List(label, table, hbox)
+    spacing = 10
+    padding = Insets(10, 10, 10, 10)
+  }
+
   scene = new Scene {
-    content = new VBox {
-      content = List(label, table, hbox)
-      spacing = 10
-      padding = Insets(10, 10, 10, 10)
-    }
+    content = vbox
   }
 
   def refreshTableView = {

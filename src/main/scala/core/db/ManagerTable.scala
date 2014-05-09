@@ -4,13 +4,17 @@ import core.models._
 import java.nio.file.{Paths, Files}
 import scala.pickling._
 import binary._
-import scalafx.collections.ObservableBuffer
 
 object ManagerTable extends IEntityTable[Manager] {
   def write =
     Files.write(Paths.get(fileName), list.pickle.value)
 
-  def read =
-    list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[Manager]]
+  def read = {
+    try {
+      list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[Manager]]
+    } catch {
+      case e: Exception => write
+    }
+  }
 }
 

@@ -2,7 +2,6 @@ package view
 
 import core.db._
 import core.models._
-import scalafx.application.JFXApp.PrimaryStage
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
 import scalafx.geometry.{Pos, Insets}
@@ -13,14 +12,10 @@ import scalafx.scene.layout._
 import scalafx.scene.control._
 import scalafx.scene.text.Font
 import scalafx.util.converter._
-import scalafx.Includes._
 import scalafx.beans.property._
 import scalafx.Includes._
-import scalafx.scene.paint.Color
-import scalafx.scene.shape.Rectangle
-import scalafx.stage.Stage
 
-class EmployeeStage extends PrimaryStage {
+class EmployeeStage extends VStage {
   val employeeTable     = EmployeeTable
   val employeeTaskTable = EmployeeTaskTable
   val taskTable         = TaskTable
@@ -33,16 +28,22 @@ class EmployeeStage extends PrimaryStage {
   employeeTableModel ++= employeeTable.list
 
   title = "Scala db Sample"
-  val label = new Label("EmployeeTable") {
+  val label = new Label("Employee Table") {
     font = Font("Arial", 20)
   }
 
   val table = new TableView[Employee](employeeTableModel) {
     columns ++= List(
       new TableColumn[Employee, String] {
-        text = "fio"
+        text = "Id"
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = _ => new TextFieldTableCell[Employee, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        prefWidth = 40
+      },
+      new TableColumn[Employee, String] {
+        text = "Name"
         cellValueFactory = { _.value.vFio }
-        cellFactory = _ => new TextFieldTableCell[Employee, String] (new DefaultStringConverter())
+        cellFactory = _ => new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Employee, String]) => {
           val employee = evt.rowValue
           val newLastFioVal = evt.newValue
@@ -53,7 +54,7 @@ class EmployeeStage extends PrimaryStage {
         prefWidth = 180
       },
       new TableColumn[Employee, String] {
-        text = "salary"
+        text = "Salary"
         cellValueFactory = { _.value.vSalary }
         cellFactory = _ => new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Employee, String]) => {
@@ -63,10 +64,10 @@ class EmployeeStage extends PrimaryStage {
           println(employee.toString + " " + newLastSalaryVal)
           println(employee.id.getOrElse(0).toString)
         }
-        prefWidth = 100
+        prefWidth = 180
       },
       new TableColumn[Employee, Boolean] {
-        text = "action"
+        text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Employee, Boolean] {
           alignment = Pos.CENTER
@@ -87,7 +88,10 @@ class EmployeeStage extends PrimaryStage {
                         val tasks = taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect employeeTaskIds).length > 0)
 
                         tasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
-                        employeeTasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
+                        employeeTasks.foreach(t => {
+                          employeeTaskTable.DeleteLink(ei, t.id.getOrElse(0))
+                          taskTable.Delete(t.id.getOrElse(0))
+                        })
 
                         refreshTableView
                       }
@@ -114,18 +118,19 @@ class EmployeeStage extends PrimaryStage {
   }
 
   val fioTextField = new TextField {
-    promptText = "fio"
+    promptText = "Name"
     maxWidth = 180
   }
 
   val salaryTextField = new TextField {
-    promptText = "salary"
+    promptText = "Salary"
     maxWidth = 100
   }
 
   val addButton = new Button("Add") {
     onAction = (_:ActionEvent) => {
-      val employee = Employee(fioTextField.getText, salaryTextField.getText.toDouble)
+      val salary = if(isNumeric(salaryTextField.getText)) salaryTextField.getText.toDouble else 0.0
+      val employee = Employee(fioTextField.getText, salary)
 
       employeeTable.Add(employee)
       refreshTableView
@@ -137,12 +142,15 @@ class EmployeeStage extends PrimaryStage {
     spacing = 10
   }
 
+  val vbox = new VBox {
+    content = List(label, table, hbox)
+    spacing = 10
+    padding = Insets(10, 10, 10, 10)
+    opacity = 0.0
+  }
+
   scene = new Scene {
-    content = new VBox {
-      content = List(label, table, hbox)
-      spacing = 10
-      padding = Insets(10, 10, 10, 10)
-    }
+    content = vbox
   }
 
   def refreshTableView = {
@@ -159,4 +167,7 @@ class EmployeeStage extends PrimaryStage {
     fioTextField.clear
     salaryTextField.clear
   }
+
+  def isNumeric(str: String): Boolean = str.matches("""\d+(\.\d*)?""")
+
 }
