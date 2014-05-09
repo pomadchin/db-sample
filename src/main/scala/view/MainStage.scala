@@ -37,6 +37,10 @@ class MainStage extends PrimaryStage { outer =>
     font = Font("Arial", 20)
   }
 
+  val signLabel = new Label ("Apache License Version 2.0") {
+    font = Font("Arial", 10)
+  }
+
   val labelList = new Label("Table List") {
     font = Font("Arial", 20)
   }
