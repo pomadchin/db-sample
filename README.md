@@ -1,6 +1,13 @@
 ## Scala db Sample
 
-Info upcoming...
+A small db sample, with a [ScalaFX](https://github.com/scalafx/scalafx-ensemble) GUI.
+
+## Build
+
+* The project uses [sbt](http://www.scala-sbt.org/)
+* To generate IntelijIDEA project just use `sbt idea-gen`
+* Generate a jar file use `sbt assembly`.
+* Enjoy this sample!
 
 ## License
 
