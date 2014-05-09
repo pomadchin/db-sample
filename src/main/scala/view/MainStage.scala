@@ -65,6 +65,8 @@ class MainStage extends PrimaryStage { outer =>
     padding = Insets(10, 10, 10, 10)
   }
 
+  println(stages)
+
   val tableList: ListView[String] = new ListView[String] {
     prefWidth = 180
 
@@ -106,7 +108,7 @@ class MainStage extends PrimaryStage { outer =>
   }
 
   val mainVBox = new VBox {
-    content = List(labelList, tableList)
+    content = List(labelList, tableList, signLabel)
     spacing = 10
     margin = Insets(10, 10, 10, 10)
   }
