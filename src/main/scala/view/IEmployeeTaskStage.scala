@@ -17,12 +17,11 @@ import scalafx.Includes._
 import scalafx.stage.Stage
 
 class IEmployeeTaskStage extends VStage {
-  val employeeTaskTable = EmployeeTaskTable
 
-  employeeTaskTable.read
+  EmployeeTaskTable.read
 
   val employeeTaskTableModel = new ObservableBuffer[EmployeeTask]
-  employeeTaskTableModel ++= employeeTaskTable.list
+  employeeTaskTableModel ++= EmployeeTaskTable.list
 
   title = "Scala db Sample"
   val label = new Label("Employee Task ILink Table") {
@@ -33,26 +32,30 @@ class IEmployeeTaskStage extends VStage {
     font = Font("Arial", 20)
   }
 
+  val emptyLabel2 = new Label(" ") {
+    font = Font("Arial", 18)
+  }
+
   val table = new TableView[EmployeeTask](employeeTaskTableModel) {
     columns ++= List(
       new TableColumn[EmployeeTask, String] {
         text = "Source Id"
         cellValueFactory = { _.value.vSourceId }
         cellFactory = _ => new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
-        prefWidth = 290
+        prefWidth = 340
       },
       new TableColumn[EmployeeTask, String] {
         text = "Target Id"
         cellValueFactory = { _.value.vTargetId }
         cellFactory = _ => new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
-        prefWidth = 290
+        prefWidth = 340
       }
     )
     //editable = true
   }
 
   val vbox = new VBox {
-    content = List(label, table, emptyLabel)
+    content = List(label, table, emptyLabel, emptyLabel2)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
     opacity = 0.0
@@ -63,9 +66,9 @@ class IEmployeeTaskStage extends VStage {
   }
 
   def refreshTableView = {
-    employeeTaskTable.read
+    EmployeeTaskTable.read
 
     employeeTaskTableModel.clear
-    employeeTaskTableModel ++= employeeTaskTable.list
+    employeeTaskTableModel ++= EmployeeTaskTable.list
   }
 }

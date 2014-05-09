@@ -13,12 +13,11 @@ import scalafx.util.converter._
 import scalafx.stage.Stage
 
 class IManagerTaskStage extends VStage {
-  val managerTaskTable = ManagerTaskTable
 
-  managerTaskTable.read
+  ManagerTaskTable.read
 
   val managerTaskTableModel = new ObservableBuffer[ManagerTask]
-  managerTaskTableModel ++= managerTaskTable.list
+  managerTaskTableModel ++= ManagerTaskTable.list
 
   title = "Scala db Sample"
   val label = new Label("Manager Task ILink Table") {
@@ -29,26 +28,30 @@ class IManagerTaskStage extends VStage {
     font = Font("Arial", 20)
   }
 
+  val emptyLabel2 = new Label(" ") {
+    font = Font("Arial", 18)
+  }
+
   val table = new TableView[ManagerTask](managerTaskTableModel) {
     columns ++= List(
       new TableColumn[ManagerTask, String] {
         text = "Source Id"
         cellValueFactory = { _.value.vSourceId }
         cellFactory = _ => new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
-        prefWidth = 290
+        prefWidth = 340
       },
       new TableColumn[ManagerTask, String] {
         text = "Target Id"
         cellValueFactory = { _.value.vTargetId }
         cellFactory = _ => new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
-        prefWidth = 290
+        prefWidth = 340
       }
     )
     //editable = true
   }
 
   val vbox = new VBox {
-    content = List(label, table, emptyLabel)
+    content = List(label, table, emptyLabel, emptyLabel2)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
     opacity = 0.0
@@ -59,9 +62,9 @@ class IManagerTaskStage extends VStage {
   }
 
   def refreshTableView = {
-    managerTaskTable.read
+    ManagerTaskTable.read
 
     managerTaskTableModel.clear
-    managerTaskTableModel ++= managerTaskTable.list
+    managerTaskTableModel ++= ManagerTaskTable.list
   }
 }

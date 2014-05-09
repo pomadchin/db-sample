@@ -88,9 +88,9 @@ class EmployeeStage extends VStage {
                         val tasks = taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect employeeTaskIds).length > 0)
 
                         tasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
-                        employeeTasks.foreach(t => {
-                          employeeTaskTable.DeleteLink(ei, t.id.getOrElse(0))
-                          taskTable.Delete(t.id.getOrElse(0))
+                        employeeTaskIds.foreach(t => {
+                          employeeTaskTable.DeleteLink(ei, t)
+                          taskTable.Delete(t)
                         })
 
                         refreshTableView
@@ -111,7 +111,7 @@ class EmployeeStage extends VStage {
             }
           )
         }
-        prefWidth = 180
+        prefWidth = 280
       }
     )
     //editable = true
@@ -124,7 +124,7 @@ class EmployeeStage extends VStage {
 
   val salaryTextField = new TextField {
     promptText = "Salary"
-    maxWidth = 100
+    maxWidth = 180
   }
 
   val addButton = new Button("Add") {
@@ -137,13 +137,43 @@ class EmployeeStage extends VStage {
     }
   }
 
+  val fioSearchTextField = new TextField {
+    promptText = "Name"
+    maxWidth = 180
+  }
+
+  val salarySearchTextField = new TextField {
+    promptText = "Salary"
+    maxWidth = 180
+  }
+
+  val searchButton = new Button("Search") {
+    onAction = (_:ActionEvent) => {
+      val salary = if(isNumeric(salarySearchTextField.getText)) Some(salarySearchTextField.getText.toDouble) else None
+      val name   = if(fioSearchTextField.getText.length > 0) Some(fioSearchTextField.getText) else None
+      val employeeList = employeeTable.find(name -> salary)
+
+      employeeTableModel.clear
+      employeeTableModel ++= employeeList
+    }
+  }
+
+  val refreshButton = new Button("Refresh") {
+    onAction = (_:ActionEvent) => refreshTableView
+  }
+
   val hbox = new HBox {
     content = List(fioTextField, salaryTextField, addButton)
     spacing = 10
   }
 
+  val hSearchBox = new HBox {
+    content = List(fioSearchTextField, salarySearchTextField, searchButton, refreshButton)
+    spacing = 10
+  }
+
   val vbox = new VBox {
-    content = List(label, table, hbox)
+    content = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
     opacity = 0.0
@@ -166,8 +196,7 @@ class EmployeeStage extends VStage {
 
     fioTextField.clear
     salaryTextField.clear
+    fioSearchTextField.clear
+    salarySearchTextField.clear
   }
-
-  def isNumeric(str: String): Boolean = str.matches("""\d+(\.\d*)?""")
-
 }

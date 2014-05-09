@@ -37,6 +37,10 @@ class MainStage extends PrimaryStage { outer =>
     font = Font("Arial", 20)
   }
 
+  val emptyLabel3 = new Label(" ") {
+    font = Font("Arial", 18)
+  }
+
   val signLabel = new Label ("Apache License Version 2.0") {
     font = Font("Arial", 10)
   }
@@ -52,7 +56,7 @@ class MainStage extends PrimaryStage { outer =>
         text = " "
         cellValueFactory = { _ => new StringProperty(this, "", "") }
         cellFactory = _ => new TextFieldTableCell[String, String] (new DefaultStringConverter)
-        prefWidth = 580
+        prefWidth = 680
       }
     )
     //editable = true
@@ -60,17 +64,15 @@ class MainStage extends PrimaryStage { outer =>
 
   // empty layer
   var emptyVBox = new VBox {
-    content = List(emptyLabel, emptyTable, emptyLabel2)
+    content = List(emptyLabel, emptyTable, emptyLabel2, emptyLabel3)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
 
-  println(stages)
-
   val tableList: ListView[String] = new ListView[String] {
     prefWidth = 180
 
-    items = ObservableBuffer(stages.keys.toList: _*)
+    items = ObservableBuffer(stages.keys.toList.sortBy(_.toLowerCase))
     selectionModel().selectionMode = SelectionMode.SINGLE
     onMouseClicked = (evt: MouseEvent) => {
       val fadeInTransition = new FadeTransition {

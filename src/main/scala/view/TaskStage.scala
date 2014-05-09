@@ -17,23 +17,15 @@ import scalafx.Includes._
 
 class TaskStage extends VStage {
 
-  val taskTable = TaskTable
-  val employeeTaskTable = EmployeeTaskTable
-  val managerTaskTable = ManagerTaskTable
-
-  taskTable.read
-  employeeTaskTable.read
-  managerTaskTable.read
+  TaskTable.read
+  EmployeeTaskTable.read
+  ManagerTaskTable.read
 
   val taskTableModel = new ObservableBuffer[Task]
-  taskTableModel ++= taskTable.list
+  taskTableModel ++= TaskTable.list
 
   title = "Scala db Sample"
   val label = new Label("Task Table") {
-    font = Font("Arial", 20)
-  }
-
-  val emptyLabel = new Label(" ") {
     font = Font("Arial", 20)
   }
 
@@ -56,7 +48,7 @@ class TaskStage extends VStage {
           println(task.toString + " " + newNameVal)
           println(task.id.getOrElse(0).toString)
         }
-        prefWidth = 270
+        prefWidth = 320
       },
       new TableColumn[Task, Boolean] {
         text = "Action"
@@ -72,14 +64,14 @@ class TaskStage extends VStage {
                       val ti = taskTableModel.get(index.value).id.getOrElse(0)
 
                       if(index.value < taskTableModel.length) {
-                        taskTable.Delete(ti)
+                        TaskTable.Delete(ti)
 
                         // cascade remove
-                        val employeeTasks = employeeTaskTable.list.filter(_.targetId == ti)
-                        val managerTasks = managerTaskTable.list.filter(_.targetId == ti)
+                        val employeeTasks = EmployeeTaskTable.list.filter(_.targetId == ti)
+                        val managerTasks = ManagerTaskTable.list.filter(_.targetId == ti)
 
-                        managerTasks.foreach(t => managerTaskTable.DeleteLink(t.sourceId, t.targetId))
-                        employeeTasks.foreach(t => employeeTaskTable.DeleteLink(t.sourceId, t.targetId))
+                        managerTasks.foreach(t => ManagerTaskTable.DeleteLink(t.sourceId, t.targetId))
+                        employeeTasks.foreach(t => EmployeeTaskTable.DeleteLink(t.sourceId, t.targetId))
 
                         refreshTableView
                       }
@@ -93,14 +85,57 @@ class TaskStage extends VStage {
             }
           )
         }
-        prefWidth = 270
+        prefWidth = 320
       }
     )
     //editable = true
   }
 
+  val nameTextField = new TextField {
+    promptText = "Name"
+    maxWidth = 180
+  }
+
+  val addButton = new Button("Add") {
+    onAction = (_:ActionEvent) => {
+      val task = Task(nameTextField.getText)
+
+      TaskTable.Add(task)
+      refreshTableView
+    }
+  }
+
+  val nameSearchTextField = new TextField {
+    promptText = "Name"
+    maxWidth = 180
+  }
+
+  val searchButton = new Button("Search") {
+    onAction = (_:ActionEvent) => {
+      val name     = if(nameSearchTextField.getText.length > 0) Some(nameSearchTextField.getText) else None
+      val taskList = TaskTable.find(name)
+
+      taskTableModel.clear
+      taskTableModel ++= taskList
+    }
+  }
+
+  val refreshButton = new Button("Refresh") {
+    onAction = (_:ActionEvent) => refreshTableView
+  }
+
+  val hbox = new HBox {
+    content = List(nameTextField, addButton)
+    spacing = 10
+  }
+
+  val hSearchBox = new HBox {
+    content = List(nameSearchTextField, searchButton, refreshButton)
+    spacing = 10
+  }
+
   val vbox = new VBox {
-    content = List(label, table, emptyLabel)
+    content = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -110,14 +145,17 @@ class TaskStage extends VStage {
   }
 
   def refreshTableView = {
-    taskTable.write
-    employeeTaskTable.write
-    managerTaskTable.write
-    taskTable.read
-    employeeTaskTable.read
-    managerTaskTable.read
+    TaskTable.write
+    EmployeeTaskTable.write
+    ManagerTaskTable.write
+    TaskTable.read
+    EmployeeTaskTable.read
+    ManagerTaskTable.read
 
     taskTableModel.clear
-    taskTableModel ++= taskTable.list
+    taskTableModel ++= TaskTable.list
+
+    nameTextField.clear
+    nameSearchTextField.clear
   }
 }

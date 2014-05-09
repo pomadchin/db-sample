@@ -17,12 +17,7 @@ trait ILinkTable[T <: ILink] { outer =>
    * @param link Добавляемая связь
    */
   def AddLink(link: T) = {
-    //DeleteLink(link.sourceId, link.targetId)
-    if(list.length > 0) {
-      link.id = Option(list.last.id.getOrElse(0) + 1)
-    } else {
-      link.id = Option(0)
-    }
+    DeleteLink(link.sourceId, link.targetId)
 
     list = list :+ link
   }
@@ -42,7 +37,7 @@ trait ILinkTable[T <: ILink] { outer =>
    * @param targetId Идентификатор второго объекта
    */
   def DeleteLink(sourceId: Int, targetId: Int) =
-    list = list filter (e => (e.sourceId != sourceId) && (e.targetId != targetId))
+    list = list filter (e => e.sourceId != sourceId || e.targetId != targetId)
 
   /**
    * Получение списка идентификаторов объектов, связанных с указанным источником
@@ -72,5 +67,5 @@ trait ILinkTable[T <: ILink] { outer =>
    * @return Объект связи
    */
   def GetLink(sourceId: Int, targetId: Int): T =
-    list filter (e => (e.sourceId != sourceId) && (e.targetId != targetId)) head
+    list filter (e => (e.sourceId == sourceId) && (e.targetId == targetId)) head
 }

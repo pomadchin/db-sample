@@ -3,23 +3,32 @@ package core.db
 import scala.pickling._
 import binary._
 import java.nio.file.{Files, Paths}
+import java.io.File
 
 object EmployeeTaskTable extends ILinkTable[EmployeeTask] {
   def AddLink(sourceId: Int, targetId: Int) = {
-    //DeleteLink(sourceId, targetId)
+    DeleteLink(sourceId, targetId)
     val task = EmployeeTask(sourceId, targetId)
-
-    if(list.length > 0) {
-      task.id = Option(list.last.id.getOrElse(0) + 1)
-    } else {
-      task.id = Option(0)
-    }
 
     list = list :+ task
   }
 
-  def write =
-    Files.write(Paths.get(fileName), list.pickle.value)
+  def write: Unit = {
+    try {
+      Files.write(Paths.get(fileName), list.pickle.value)
+    } catch {
+      case e: Exception => {
+        var f = false
+        try {
+          f = new File("tmp/").mkdir
+        } catch {
+          case e: Exception => println("Can't create tmp dir.")
+        }
+
+        if(f) write
+      }
+    }
+  }
 
   def read = {
     try {

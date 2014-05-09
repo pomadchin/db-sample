@@ -14,18 +14,20 @@ import scalafx.scene.text.Font
 import scalafx.util.converter._
 import scalafx.beans.property._
 import scalafx.Includes._
+import scalafx.stage.Stage
 
 class ManagerStage extends VStage {
-  val managerTable     = ManagerTable
-  val managerTaskTable = ManagerTaskTable
-  val taskTable        = TaskTable
 
-  managerTable.read
-  managerTaskTable.read
-  taskTable.read
+  ManagerTable.read
+  EmployeeTable.read
+  ManagerTaskTable.read
+  EmployeeTaskTable.read
+  TaskTable.read
 
   val managerTableModel = new ObservableBuffer[Manager]
-  managerTableModel ++= managerTable.list
+  managerTableModel ++= ManagerTable.list
+
+  var sumSalary = new StringProperty(this, "sumSalary", "")
 
   title = "Scala db Sample"
   val label = new Label("Manager Table") {
@@ -80,17 +82,17 @@ class ManagerStage extends VStage {
                       val mi = managerTableModel.get(index.value).id.getOrElse(0)
 
                       if(index.value < managerTableModel.length) {
-                        managerTable.Delete(mi)
+                        ManagerTable.Delete(mi)
 
                         // cascade remove
-                        val managerTasks = managerTaskTable.list.filter(_.sourceId == mi)
+                        val managerTasks = ManagerTaskTable.list.filter(_.sourceId == mi)
                         val managerTaskIds = managerTasks.map(_.targetId)
-                        val tasks = taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect managerTaskIds).length > 0)
+                        val tasks = TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect managerTaskIds).length > 0)
 
-                        tasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
-                        managerTasks.foreach(t => {
-                          managerTaskTable.DeleteLink(mi, t.id.getOrElse(0))
-                          taskTable.Delete(t.id.getOrElse(0))
+                        tasks.foreach(t => TaskTable.Delete(t.id.getOrElse(0)))
+                        managerTaskIds.foreach(t => {
+                          ManagerTaskTable.DeleteLink(mi, t)
+                          TaskTable.Delete(t)
                         })
 
                         refreshTableView
@@ -102,6 +104,30 @@ class ManagerStage extends VStage {
                       val tasksStage = new ManagerTaskStage(managerTableModel.get(index.value).id)
                       tasksStage.show
                     }
+                  },
+                  new Button("Sum Salary") {
+                    onAction = (ae: ActionEvent) => {
+                      if(index.value < managerTableModel.length) {
+                        val sumSalary: Double = ManagerTable.sumSalary(index.value, managerTableModel)
+
+                        val label = new Label("Manager employees sum salary: " + sumSalary) {
+                          font = Font("Arial", 15)
+                        }
+
+                        val stage = new Stage {
+                          title = "Sum Employees Salary"
+                          scene = new Scene {
+                            content = new HBox {
+                              content = label
+                              spacing = 10
+                              padding = Insets(10, 10, 10, 10)
+                            }
+                          }
+                        }
+
+                        stage.show
+                      }
+                    }
                   }
                 )
                 spacing = 10
@@ -111,7 +137,7 @@ class ManagerStage extends VStage {
             }
           )
         }
-        prefWidth = 180
+        prefWidth = 280
       }
     )
     //editable = true
@@ -131,9 +157,34 @@ class ManagerStage extends VStage {
     onAction = (_:ActionEvent) => {
       val manager = Manager(fioTextField.getText, positionTextField.getText)
 
-      managerTable.Add(manager)
+      ManagerTable.Add(manager)
       refreshTableView
     }
+  }
+
+  val fioSearchTextField = new TextField {
+    promptText = "Name"
+    maxWidth = 180
+  }
+
+  val positionSearchTextField = new TextField {
+    promptText = "Position"
+    maxWidth = 180
+  }
+
+  val searchButton = new Button("Search") {
+    onAction = (_:ActionEvent) => {
+      val position = if(positionSearchTextField.getText.length > 0) Some(positionSearchTextField.getText) else None
+      val name     = if(fioSearchTextField.getText.length > 0) Some(fioSearchTextField.getText) else None
+      val managerList = ManagerTable.find(name -> position)
+
+      managerTableModel.clear
+      managerTableModel ++= managerList
+    }
+  }
+
+  val refreshButton = new Button("Refresh") {
+    onAction = (_:ActionEvent) => refreshTableView
   }
 
   val hbox = new HBox {
@@ -141,8 +192,13 @@ class ManagerStage extends VStage {
     spacing = 10
   }
 
+  val hSearchBox = new HBox {
+    content = List(fioSearchTextField, positionSearchTextField, searchButton, refreshButton)
+    spacing = 10
+  }
+
   val vbox = new VBox {
-    content = List(label, table, hbox)
+    content = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -152,17 +208,19 @@ class ManagerStage extends VStage {
   }
 
   def refreshTableView = {
-    managerTable.write
-    taskTable.write
-    managerTaskTable.write
-    managerTable.read
-    taskTable.read
-    managerTaskTable.read
+    ManagerTable.write
+    TaskTable.write
+    ManagerTaskTable.write
+    ManagerTable.read
+    TaskTable.read
+    ManagerTaskTable.read
 
     managerTableModel.clear
-    managerTableModel ++= managerTable.list
+    managerTableModel ++= ManagerTable.list
 
     fioTextField.clear
     positionTextField.clear
+    fioSearchTextField.clear
+    positionSearchTextField.clear
   }
 }
