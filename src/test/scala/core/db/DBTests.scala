@@ -1,11 +1,20 @@
 package core.db
 
 import core.models._
-import org.junit.Test
+import org.junit._
 import org.junit.Assert._
+import scalafx.collections.ObservableBuffer
 
 class DBTests {
 
+  @Before
+  def initTestEmployeeTableFunctions= {
+    EmployeeTable.list = List[Employee]()
+    ManagerTable.list = List[Manager]()
+    TaskTable.list = List[Task]()
+    ManagerTaskTable.list = List[ManagerTask]()
+    EmployeeTaskTable.list = List[EmployeeTask]()
+  }
   @Test
   def testEmployeeTableFunctions {
 
@@ -63,6 +72,14 @@ class DBTests {
     assertEquals(List(), EmployeeTable.list)
   }
 
+  @Before
+  def initTestManagerTableFunctions = {
+    EmployeeTable.list = List[Employee]()
+    ManagerTable.list = List[Manager]()
+    TaskTable.list = List[Task]()
+    ManagerTaskTable.list = List[ManagerTask]()
+    EmployeeTaskTable.list = List[EmployeeTask]()
+  }
   @Test
   def testManagerTableFunctions {
 
@@ -120,6 +137,14 @@ class DBTests {
     assertEquals(List(), ManagerTable.list)
   }
 
+  @Before
+  def initTestTaskTableFunctions = {
+    EmployeeTable.list = List[Employee]()
+    ManagerTable.list = List[Manager]()
+    TaskTable.list = List[Task]()
+    ManagerTaskTable.list = List[ManagerTask]()
+    EmployeeTaskTable.list = List[EmployeeTask]()
+  }
   @Test
   def testTaskTableFunctions {
     
@@ -173,6 +198,14 @@ class DBTests {
     assertEquals(List(), TaskTable.list)
   }
 
+  @Before
+  def initTestEmployeeTaskTableFunctions= {
+    EmployeeTable.list = List[Employee]()
+    ManagerTable.list = List[Manager]()
+    TaskTable.list = List[Task]()
+    ManagerTaskTable.list = List[ManagerTask]()
+    EmployeeTaskTable.list = List[EmployeeTask]()
+  }
   @Test
   def testEmployeeTaskTableFunctions {
 
@@ -204,8 +237,18 @@ class DBTests {
     assertEquals(0, EmployeeTaskTable.GetSourceId(0))
 
     assertEquals(EmployeeTask(2,2), EmployeeTaskTable.GetLink(2,2))
+
+    EmployeeTaskTable.list = List[EmployeeTask]()
   }
 
+  @Before
+  def initTestManagerTaskTableFunctions = {
+    EmployeeTable.list = List[Employee]()
+    ManagerTable.list = List[Manager]()
+    TaskTable.list = List[Task]()
+    ManagerTaskTable.list = List[ManagerTask]()
+    EmployeeTaskTable.list = List[EmployeeTask]()
+  }
   @Test
   def testManagerTaskTableFunctions {
 
@@ -238,10 +281,118 @@ class DBTests {
 
     assertEquals(ManagerTask(2,2), ManagerTaskTable.GetLink(2,2))
 
-    ManagerTaskTable.list = List(
-      ManagerTask(0,0), ManagerTask(1,0),
-      ManagerTask(2,0), ManagerTask(2,2),
-      ManagerTask(2,3)
-    )
+    ManagerTaskTable.list = List[ManagerTask]()
+  }
+
+  @Before
+  def initTestTableCascadeFunctions = {
+    EmployeeTable.list = List[Employee]()
+    ManagerTable.list = List[Manager]()
+    TaskTable.list = List[Task]()
+    ManagerTaskTable.list = List[ManagerTask]()
+    EmployeeTaskTable.list = List[EmployeeTask]()
+  }
+  @Test
+  def testTableCascadeFunctions {
+    val managerTableModel = new ObservableBuffer[Manager]
+    val employeeTableModel = new ObservableBuffer[Employee]
+
+    val e0 = Employee("e0", 0.0)
+    val e1 = Employee("e1", 1.0)
+    val e2 = Employee("e2", 2.0)
+    val e3 = Employee("e1", 2.0)
+
+    val m0 = Manager("m0", "p0")
+    val m1 = Manager("m1", "p1")
+    val m2 = Manager("m2", "p2")
+    val m3 = Manager("m1", "p2")
+
+    val t0 = Task("t0")
+    val t1 = Task("t1")
+    val t2 = Task("t2")
+    val t3 = Task("t1")
+
+    EmployeeTable.Add(e0)
+    EmployeeTable.Add(e1)
+    EmployeeTable.Add(e2)
+    EmployeeTable.Add(e3)
+
+    employeeTableModel ++= EmployeeTable.list
+
+    ManagerTable.Add(m0)
+    ManagerTable.Add(m1)
+    ManagerTable.Add(m2)
+    ManagerTable.Add(m3)
+
+    managerTableModel ++= ManagerTable.list
+
+    TaskTable.Add(t0)
+    TaskTable.Add(t1)
+    TaskTable.Add(t2)
+    TaskTable.Add(t3)
+
+    e0.id = Some(0)
+    e1.id = Some(1)
+    e2.id = Some(2)
+    e3.id = Some(3)
+
+    m0.id = Some(0)
+    m1.id = Some(1)
+    m2.id = Some(2)
+    m3.id = Some(3)
+
+    m0.id = Some(0)
+    m1.id = Some(1)
+    m2.id = Some(2)
+    m3.id = Some(3)
+
+    EmployeeTaskTable.AddLink(0,0)
+    EmployeeTaskTable.AddLink(1,0)
+    EmployeeTaskTable.AddLink(2,0)
+    EmployeeTaskTable.AddLink(2,2)
+    EmployeeTaskTable.AddLink(2,3)
+    EmployeeTaskTable.AddLink(3,3)
+
+    ManagerTaskTable.AddLink(0,0)
+    ManagerTaskTable.AddLink(1,0)
+    ManagerTaskTable.AddLink(2,0)
+    ManagerTaskTable.AddLink(2,2)
+    ManagerTaskTable.AddLink(2,3)
+
+    assertEquals(5.0, ManagerTable.sumSalary(2, managerTableModel), 0.0)
+
+    assertEquals(3.0, ManagerTable.sumSalary(1, managerTableModel), 0.0)
+
+    ManagerTable.DeleteCascade(2)
+    assertEquals(List(ManagerTask(0,0), ManagerTask(1,0)), ManagerTaskTable.list)
+
+    ManagerTable.DeleteCascade(0)
+    assertEquals(List(ManagerTask(1,0)), ManagerTaskTable.list)
+
+    EmployeeTable.DeleteCascade(2)
+    assertEquals(List(EmployeeTask(0,0), EmployeeTask(1,0), EmployeeTask(3,3)), EmployeeTaskTable.list)
+
+    EmployeeTable.DeleteCascade(0)
+    assertEquals(List(EmployeeTask(1,0), EmployeeTask(3,3)), EmployeeTaskTable.list)
+
+    ManagerTaskTable.AddLink(0,0)
+    ManagerTaskTable.AddLink(2,0)
+    ManagerTaskTable.AddLink(2,2)
+    ManagerTaskTable.AddLink(2,3)
+
+    EmployeeTaskTable.AddLink(0,0)
+    EmployeeTaskTable.AddLink(2,0)
+    EmployeeTaskTable.AddLink(2,2)
+    EmployeeTaskTable.AddLink(2,3)
+
+    TaskTable.DeleteCascade(0)
+    assertEquals(List(t1, t2, t3), TaskTable.list)
+    assertEquals(List(EmployeeTask(3,3), EmployeeTask(2,2), EmployeeTask(2,3)), EmployeeTaskTable.list)
+    assertEquals(List(ManagerTask(2,2), ManagerTask(2,3)), ManagerTaskTable.list)
+
+    TaskTable.DeleteCascade(2)
+    assertEquals(List(t1, t3), TaskTable.list)
+    assertEquals(List(EmployeeTask(3,3), EmployeeTask(2,3)), EmployeeTaskTable.list)
+    assertEquals(List(ManagerTask(2,3)), ManagerTaskTable.list)
   }
 }
