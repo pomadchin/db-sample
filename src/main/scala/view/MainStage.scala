@@ -17,6 +17,7 @@ import scalafx.Includes._
 import scalafx.animation._
 
 class MainStage extends PrimaryStage { outer =>
+
   val stages = Map(
     "EmployeeTable"          -> new EmployeeStage(),
     "ManagerTable"           -> new ManagerStage(),

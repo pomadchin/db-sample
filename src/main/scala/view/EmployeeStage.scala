@@ -16,16 +16,13 @@ import scalafx.beans.property._
 import scalafx.Includes._
 
 class EmployeeStage extends VStage {
-  val employeeTable     = EmployeeTable
-  val employeeTaskTable = EmployeeTaskTable
-  val taskTable         = TaskTable
 
-  employeeTable.read
-  employeeTaskTable.read
-  taskTable.read
+  EmployeeTable.read
+  EmployeeTaskTable.read
+  TaskTable.read
 
   val employeeTableModel = new ObservableBuffer[Employee]
-  employeeTableModel ++= employeeTable.list
+  employeeTableModel ++= EmployeeTable.list
 
   title = "Scala db Sample"
   val label = new Label("Employee Table") {
@@ -80,17 +77,17 @@ class EmployeeStage extends VStage {
                       val ei = employeeTableModel.get(index.value).id.getOrElse(0)
 
                       if(index.value < employeeTableModel.length) {
-                        employeeTable.Delete(ei)
+                        EmployeeTable.Delete(ei)
 
                         // cascade remove
-                        val employeeTasks = employeeTaskTable.list.filter(_.sourceId == ei)
+                        val employeeTasks = EmployeeTaskTable.list.filter(_.sourceId == ei)
                         val employeeTaskIds = employeeTasks.map(_.targetId)
-                        val tasks = taskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect employeeTaskIds).length > 0)
+                        val tasks = TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect employeeTaskIds).length > 0)
 
-                        tasks.foreach(t => taskTable.Delete(t.id.getOrElse(0)))
+                        tasks.foreach(t => TaskTable.Delete(t.id.getOrElse(0)))
                         employeeTaskIds.foreach(t => {
-                          employeeTaskTable.DeleteLink(ei, t)
-                          taskTable.Delete(t)
+                          EmployeeTaskTable.DeleteLink(ei, t)
+                          TaskTable.Delete(t)
                         })
 
                         refreshTableView
@@ -132,7 +129,7 @@ class EmployeeStage extends VStage {
       val salary = if(isNumeric(salaryTextField.getText)) salaryTextField.getText.toDouble else 0.0
       val employee = Employee(fioTextField.getText, salary)
 
-      employeeTable.Add(employee)
+      EmployeeTable.Add(employee)
       refreshTableView
     }
   }
@@ -151,7 +148,7 @@ class EmployeeStage extends VStage {
     onAction = (_:ActionEvent) => {
       val salary = if(isNumeric(salarySearchTextField.getText)) Some(salarySearchTextField.getText.toDouble) else None
       val name   = if(fioSearchTextField.getText.length > 0) Some(fioSearchTextField.getText) else None
-      val employeeList = employeeTable.find(name -> salary)
+      val employeeList = EmployeeTable.find(name -> salary)
 
       employeeTableModel.clear
       employeeTableModel ++= employeeList
@@ -184,15 +181,15 @@ class EmployeeStage extends VStage {
   }
 
   def refreshTableView = {
-    employeeTable.write
-    taskTable.write
-    employeeTaskTable.write
-    employeeTable.read
-    taskTable.read
-    employeeTaskTable.read
+    EmployeeTable.write
+    TaskTable.write
+    EmployeeTaskTable.write
+    EmployeeTable.read
+    TaskTable.read
+    EmployeeTaskTable.read
 
     employeeTableModel.clear
-    employeeTableModel ++= employeeTable.list
+    employeeTableModel ++= EmployeeTable.list
 
     fioTextField.clear
     salaryTextField.clear
