@@ -55,4 +55,11 @@ object ManagerTable extends IEntityTable[Manager] {
     employees.foldLeft(0.0)((acc, e) => acc + e.salary)
   }
 
+  def DeleteCascade(id: Int) = {
+    ManagerTable.Delete(id)
+
+    // cascade remove
+    ManagerTaskTable.GetTargetIds(id).foreach(t => ManagerTaskTable.DeleteLink(id, t))
+  }
+
 }

@@ -41,4 +41,11 @@ object EmployeeTable extends IEntityTable[Employee] {
     }
   }
 
+  def DeleteCascade(id: Int) = {
+    EmployeeTable.Delete(id)
+
+    // cascade remove
+    EmployeeTaskTable.GetTargetIds(id).foreach(t => EmployeeTaskTable.DeleteLink(id, t))
+  }
+
 }

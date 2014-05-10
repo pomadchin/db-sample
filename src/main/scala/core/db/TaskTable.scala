@@ -38,4 +38,15 @@ object TaskTable extends IEntityTable[Task] {
       case e: Exception => write
     }
   }
+
+  def DeleteCascade(id: Int) = {
+    TaskTable.Delete(id)
+
+    // cascade remove
+    val employeeTasks = EmployeeTaskTable.list.filter(_.targetId == id)
+    val managerTasks = ManagerTaskTable.list.filter(_.targetId == id)
+
+    managerTasks.foreach(t => ManagerTaskTable.DeleteLink(t.sourceId, t.targetId))
+    employeeTasks.foreach(t => EmployeeTaskTable.DeleteLink(t.sourceId, t.targetId))
+  }
 }

@@ -82,19 +82,7 @@ class ManagerStage extends VStage {
                       val mi = managerTableModel.get(index.value).id.getOrElse(0)
 
                       if(index.value < managerTableModel.length) {
-                        ManagerTable.Delete(mi)
-
-                        // cascade remove
-                        val managerTasks = ManagerTaskTable.list.filter(_.sourceId == mi)
-                        val managerTaskIds = managerTasks.map(_.targetId)
-                        val tasks = TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect managerTaskIds).length > 0)
-
-                        tasks.foreach(t => TaskTable.Delete(t.id.getOrElse(0)))
-                        managerTaskIds.foreach(t => {
-                          ManagerTaskTable.DeleteLink(mi, t)
-                          TaskTable.Delete(t)
-                        })
-
+                        ManagerTable.DeleteCascade(mi)
                         refreshTableView
                       }
                     }

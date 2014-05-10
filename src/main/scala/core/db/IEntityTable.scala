@@ -46,4 +46,6 @@ trait IEntityTable[T <: Identifiable] { outer =>
    * @param id Идентификатор удаляемого объекта
    */
   def Delete(id: Int) = list = list.filter(_.id.getOrElse(0) != id)
+
+  def DeleteCascade(id: Int)
 }

@@ -64,15 +64,7 @@ class TaskStage extends VStage {
                       val ti = taskTableModel.get(index.value).id.getOrElse(0)
 
                       if(index.value < taskTableModel.length) {
-                        TaskTable.Delete(ti)
-
-                        // cascade remove
-                        val employeeTasks = EmployeeTaskTable.list.filter(_.targetId == ti)
-                        val managerTasks = ManagerTaskTable.list.filter(_.targetId == ti)
-
-                        managerTasks.foreach(t => ManagerTaskTable.DeleteLink(t.sourceId, t.targetId))
-                        employeeTasks.foreach(t => EmployeeTaskTable.DeleteLink(t.sourceId, t.targetId))
-
+                        TaskTable.DeleteCascade(ti)
                         refreshTableView
                       }
                     }
