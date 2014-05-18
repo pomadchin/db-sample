@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>view</OriginalElement>
+  <nodes>
+    <node x="1890.0" y="188.0">view.EmployeeStage</node>
+    <node x="1588.0" y="258.0">view.IEmployeeTaskStage</node>
+    <node x="1246.0" y="0.0">view.VStage</node>
+    <node x="302.0" y="208.0">view.TaskStage</node>
+    <node x="704.0" y="208.0">view.ManagerTaskStage</node>
+    <node x="511.0" y="601.0">Main$</node>
+    <node x="2569.0" y="208.0">view.EmployeeTaskStage</node>
+    <node x="0.0" y="601.0">view.MainStage</node>
+    <node x="1106.0" y="168.0">view.ManagerStage</node>
+    <node x="0.0" y="258.0">view.IManagerTaskStage</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="view.EmployeeStage" target="view.VStage">
+      <point x="0.0" y="-174.0" />
+      <point x="2219.5" y="138.0" />
+      <point x="1389.0" y="138.0" />
+      <point x="52.0" y="54.0" />
+    </edge>
+    <edge source="view.EmployeeTaskStage" target="view.VStage">
+      <point x="0.0" y="-154.0" />
+      <point x="2760.0" y="128.0" />
+      <point x="1415.0" y="128.0" />
+      <point x="78.0" y="54.0" />
+    </edge>
+    <edge source="view.ManagerTaskStage" target="view.VStage">
+      <point x="0.0" y="-154.0" />
+      <point x="895.0" y="148.0" />
+      <point x="1311.0" y="148.0" />
+      <point x="-26.0" y="54.0" />
+    </edge>
+    <edge source="view.IManagerTaskStage" target="view.VStage">
+      <point x="0.0" y="-104.0" />
+      <point x="141.0" y="128.0" />
+      <point x="1259.0" y="128.0" />
+      <point x="-78.0" y="54.0" />
+    </edge>
+    <edge source="view.IEmployeeTaskStage" target="view.VStage">
+      <point x="0.0" y="-104.0" />
+      <point x="1729.0" y="148.0" />
+      <point x="1363.0" y="148.0" />
+      <point x="26.0" y="54.0" />
+    </edge>
+    <edge source="view.ManagerStage" target="view.VStage">
+      <point x="0.0" y="-194.0" />
+      <point x="0.0" y="54.0" />
+    </edge>
+    <edge source="view.TaskStage" target="view.VStage">
+      <point x="0.0" y="-154.0" />
+      <point x="493.0" y="138.0" />
+      <point x="1285.0" y="138.0" />
+      <point x="-52.0" y="54.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="0.6491525423728814" x="756.3968668407309" y="315.11488250652735" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Inner Classes</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
