@@ -51,7 +51,7 @@ class IManagerTaskStage extends VStage {
   }
 
   val vbox = new VBox {
-    content = List(label, table, emptyLabel, emptyLabel2)
+    children = List(label, table, emptyLabel, emptyLabel2)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
     opacity = 0.0
@@ -64,7 +64,7 @@ class IManagerTaskStage extends VStage {
   def refreshTableView = {
     ManagerTaskTable.read
 
-    managerTaskTableModel.clear
+    managerTaskTableModel.clear()
     managerTaskTableModel ++= ManagerTaskTable.list
   }
 }

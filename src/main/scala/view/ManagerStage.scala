@@ -39,7 +39,7 @@ class ManagerStage extends VStage {
       new TableColumn[Manager, String] {
         text = "Id"
         cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ => new TextFieldTableCell[Manager, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        cellFactory = _ => new TextFieldTableCell[Manager, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Manager, String] {
@@ -72,11 +72,11 @@ class ManagerStage extends VStage {
         text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Manager, Boolean] {
-          alignment = Pos.CENTER
+          alignment = Pos.Center
           item.onChange((_, _, p) =>
             if(p) {
               graphic = new HBox {
-                content = List(
+                children = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
                       val mi = managerTableModel.get(index.value).id.getOrElse(0)
@@ -90,7 +90,7 @@ class ManagerStage extends VStage {
                   new Button("Add Tasks") {
                     onAction = (ae: ActionEvent) => {
                       val tasksStage = new ManagerTaskStage(managerTableModel.get(index.value).id)
-                      tasksStage.show
+                      tasksStage.show()
                     }
                   },
                   new Button("Sum Salary") {
@@ -113,13 +113,13 @@ class ManagerStage extends VStage {
                           }
                         }
 
-                        stage.show
+                        stage.show()
                       }
                     }
                   }
                 )
                 spacing = 10
-                alignment = Pos.CENTER
+                alignment = Pos.Center
                 //padding = Insets(10, 10, 10, 10)
               }
             }
@@ -166,7 +166,7 @@ class ManagerStage extends VStage {
       val name     = if(fioSearchTextField.getText.length > 0) Some(fioSearchTextField.getText) else None
       val managerList = ManagerTable.find(name -> position)
 
-      managerTableModel.clear
+      managerTableModel.clear()
       managerTableModel ++= managerList
     }
   }
@@ -176,17 +176,17 @@ class ManagerStage extends VStage {
   }
 
   val hbox = new HBox {
-    content = List(fioTextField, positionTextField, addButton)
+    children = List(fioTextField, positionTextField, addButton)
     spacing = 10
   }
 
   val hSearchBox = new HBox {
-    content = List(fioSearchTextField, positionSearchTextField, searchButton, refreshButton)
+    children = List(fioSearchTextField, positionSearchTextField, searchButton, refreshButton)
     spacing = 10
   }
 
   val vbox = new VBox {
-    content = List(label, table, hbox, hSearchBox)
+    children = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -203,12 +203,12 @@ class ManagerStage extends VStage {
     TaskTable.read
     ManagerTaskTable.read
 
-    managerTableModel.clear
+    managerTableModel.clear()
     managerTableModel ++= ManagerTable.list
 
-    fioTextField.clear
-    positionTextField.clear
-    fioSearchTextField.clear
-    positionSearchTextField.clear
+    fioTextField.clear()
+    positionTextField.clear()
+    fioSearchTextField.clear()
+    positionSearchTextField.clear()
   }
 }

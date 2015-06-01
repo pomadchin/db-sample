@@ -34,7 +34,7 @@ class TaskStage extends VStage {
       new TableColumn[Task, String] {
         text = "Id"
         cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Task, String] {
@@ -54,11 +54,11 @@ class TaskStage extends VStage {
         text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Task, Boolean] {
-          alignment = Pos.CENTER
+          alignment = Pos.Center
           item.onChange((_, _, p) =>
             if(p) {
               graphic = new HBox {
-                content = List(
+                children = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
                       val ti = taskTableModel.get(index.value).id.getOrElse(0)
@@ -71,7 +71,7 @@ class TaskStage extends VStage {
                   }
                 )
                 spacing = 10
-                alignment = Pos.CENTER
+                alignment = Pos.Center
                 //padding = Insets(10, 10, 10, 10)
               }
             }
@@ -107,7 +107,7 @@ class TaskStage extends VStage {
       val name     = if(nameSearchTextField.getText.length > 0) Some(nameSearchTextField.getText) else None
       val taskList = TaskTable.find(name)
 
-      taskTableModel.clear
+      taskTableModel.clear()
       taskTableModel ++= taskList
     }
   }
@@ -117,17 +117,17 @@ class TaskStage extends VStage {
   }
 
   val hbox = new HBox {
-    content = List(nameTextField, addButton)
+    children = List(nameTextField, addButton)
     spacing = 10
   }
 
   val hSearchBox = new HBox {
-    content = List(nameSearchTextField, searchButton, refreshButton)
+    children = List(nameSearchTextField, searchButton, refreshButton)
     spacing = 10
   }
 
   val vbox = new VBox {
-    content = List(label, table, hbox, hSearchBox)
+    children = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -144,10 +144,10 @@ class TaskStage extends VStage {
     EmployeeTaskTable.read
     ManagerTaskTable.read
 
-    taskTableModel.clear
+    taskTableModel.clear()
     taskTableModel ++= TaskTable.list
 
-    nameTextField.clear
-    nameSearchTextField.clear
+    nameTextField.clear()
+    nameSearchTextField.clear()
   }
 }

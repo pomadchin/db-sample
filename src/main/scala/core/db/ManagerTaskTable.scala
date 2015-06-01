@@ -1,5 +1,6 @@
 package core.db
 
+import scala.pickling.Defaults._
 import scala.pickling._
 import binary._
 import java.nio.file.{Files, Paths}

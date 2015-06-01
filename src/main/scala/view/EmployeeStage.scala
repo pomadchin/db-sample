@@ -34,7 +34,7 @@ class EmployeeStage extends VStage {
       new TableColumn[Employee, String] {
         text = "Id"
         cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ => new TextFieldTableCell[Employee, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        cellFactory = _ => new TextFieldTableCell[Employee, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Employee, String] {
@@ -67,11 +67,11 @@ class EmployeeStage extends VStage {
         text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Employee, Boolean] {
-          alignment = Pos.CENTER
+          alignment = Pos.Center
           item.onChange((_, _, p) =>
             if(p) {
               graphic = new HBox {
-                content = List(
+                children = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
                       val ei = employeeTableModel.get(index.value).id.getOrElse(0)
@@ -85,12 +85,12 @@ class EmployeeStage extends VStage {
                   new Button("Add Tasks") {
                     onAction = (ae: ActionEvent) => {
                       val tasksStage = new EmployeeTaskStage(employeeTableModel.get(index.value).id)
-                      tasksStage.show
+                      tasksStage.show()
                     }
                   }
                 )
                 spacing = 10
-                alignment = Pos.CENTER
+                alignment = Pos.Center
                 //padding = Insets(10, 10, 10, 10)
               }
             }
@@ -138,7 +138,7 @@ class EmployeeStage extends VStage {
       val name   = if(fioSearchTextField.getText.length > 0) Some(fioSearchTextField.getText) else None
       val employeeList = EmployeeTable.find(name -> salary)
 
-      employeeTableModel.clear
+      employeeTableModel.clear()
       employeeTableModel ++= employeeList
     }
   }
@@ -148,17 +148,17 @@ class EmployeeStage extends VStage {
   }
 
   val hbox = new HBox {
-    content = List(fioTextField, salaryTextField, addButton)
+    children = List(fioTextField, salaryTextField, addButton)
     spacing = 10
   }
 
   val hSearchBox = new HBox {
-    content = List(fioSearchTextField, salarySearchTextField, searchButton, refreshButton)
+    children = List(fioSearchTextField, salarySearchTextField, searchButton, refreshButton)
     spacing = 10
   }
 
   val vbox = new VBox {
-    content = List(label, table, hbox, hSearchBox)
+    children = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
     opacity = 0.0
@@ -176,12 +176,12 @@ class EmployeeStage extends VStage {
     TaskTable.read
     EmployeeTaskTable.read
 
-    employeeTableModel.clear
+    employeeTableModel.clear()
     employeeTableModel ++= EmployeeTable.list
 
-    fioTextField.clear
-    salaryTextField.clear
-    fioSearchTextField.clear
-    salarySearchTextField.clear
+    fioTextField.clear()
+    salaryTextField.clear()
+    fioSearchTextField.clear()
+    salarySearchTextField.clear()
   }
 }

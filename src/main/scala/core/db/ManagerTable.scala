@@ -2,6 +2,7 @@ package core.db
 
 import core.models._
 import java.nio.file.{Paths, Files}
+import scala.pickling.Defaults._
 import scala.pickling._
 import binary._
 import java.io.File

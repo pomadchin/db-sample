@@ -36,7 +36,7 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
       new TableColumn[Task, String] {
         text = "Id"
         cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.CENTER }; (new DefaultStringConverter)
+        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Task, String] {
@@ -56,11 +56,11 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
         text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
         cellFactory = _ => new TableCell[Task, Boolean] {
-          alignment = Pos.CENTER
+          alignment = Pos.Center
           item.onChange((_, _, p) =>
             if(p) {
               graphic = new HBox {
-                content = List(
+                children = List(
                   new Button("Delete") {
                     onAction = (ae: ActionEvent) => {
                       if(index.value < taskTableModel.length) {
@@ -72,7 +72,7 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
                   }
                 )
                 spacing = 10
-                alignment = Pos.CENTER
+                alignment = Pos.Center
                 //padding = Insets(10, 10, 10, 10)
               }
             }
@@ -117,17 +117,17 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
   }
 
   val hbox = new HBox {
-    content = List(nameTextField, addButton)
+    children = List(nameTextField, addButton)
     spacing = 10
   }
 
   val hIdBox = new HBox {
-    content = List(idTextField, addIdButton)
+    children = List(idTextField, addIdButton)
     spacing = 10
   }
 
   val vbox = new VBox {
-    content = List(label, table, hbox, hIdBox)
+    children = List(label, table, hbox, hIdBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -144,10 +144,10 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
 
     val taskIds = EmployeeTaskTable.list.filter(_.sourceId == employeeId.getOrElse(0)).map(_.targetId)
 
-    taskTableModel.clear
+    taskTableModel.clear()
     taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
 
-    nameTextField.clear
-    idTextField.clear
+    nameTextField.clear()
+    idTextField.clear()
   }
 }

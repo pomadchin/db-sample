@@ -65,7 +65,7 @@ class MainStage extends PrimaryStage { outer =>
 
   // empty layer
   var emptyVBox = new VBox {
-    content = List(emptyLabel, emptyTable, emptyLabel2, emptyLabel3)
+    children = List(emptyLabel, emptyTable, emptyLabel2, emptyLabel3)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
@@ -76,7 +76,7 @@ class MainStage extends PrimaryStage { outer =>
     items = ObservableBuffer(stages.keys.toList.sortBy(_.toLowerCase))
     selectionModel().selectionMode = SelectionMode.SINGLE
     onMouseClicked = (evt: MouseEvent) => {
-      val fadeInTransition = new FadeTransition {
+      lazy val fadeInTransition = new FadeTransition {
         duration = Duration(500)
         node = emptyVBox
         fromValue = 1
@@ -84,11 +84,11 @@ class MainStage extends PrimaryStage { outer =>
       }
       fadeInTransition.play()
 
-      val stage = stages(selectionModel().selectedItem.value)
+      lazy val stage = stages(selectionModel().selectedItem.value)
       stage.refreshTableView
 
-      val mHBox = new HBox {
-        content = List(mainVBox, stage.vbox)
+      lazy val mHBox = new HBox {
+        children = List(mainVBox, stage.vbox)
         spacing = 10
         padding = Insets(10, 10, 10, 10)
       }
@@ -99,7 +99,7 @@ class MainStage extends PrimaryStage { outer =>
         }
       }
 
-      val fadeOutTransition = new FadeTransition {
+      lazy val fadeOutTransition = new FadeTransition {
         duration = Duration(500)
         node = stage.vbox
         fromValue = 0
@@ -111,13 +111,13 @@ class MainStage extends PrimaryStage { outer =>
   }
 
   val mainVBox = new VBox {
-    content = List(labelList, tableList, signLabel)
+    children = List(labelList, tableList, signLabel)
     spacing = 10
     margin = Insets(10, 10, 10, 10)
   }
 
   val mHBox = new HBox {
-    content = List(mainVBox, emptyVBox)
+    children = List(mainVBox, emptyVBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
   }
