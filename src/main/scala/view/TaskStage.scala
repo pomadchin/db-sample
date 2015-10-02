@@ -33,15 +33,15 @@ class TaskStage extends VStage {
     columns ++= List(
       new TableColumn[Task, String] {
         text = "Id"
-        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = _ ⇒ new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Task, String] {
         text = "Name"
         cellValueFactory = { _.value.vName }
-        cellFactory = _ => new TextFieldTableCell[Task, String] (new DefaultStringConverter())
-        onEditCommit = (evt: CellEditEvent[Task, String]) => {
+        cellFactory = _ ⇒ new TextFieldTableCell[Task, String] (new DefaultStringConverter())
+        onEditCommit = (evt: CellEditEvent[Task, String]) ⇒ {
           val task = evt.rowValue
           val newNameVal = evt.newValue
           // Update current person data set
@@ -52,15 +52,15 @@ class TaskStage extends VStage {
       },
       new TableColumn[Task, Boolean] {
         text = "Action"
-        cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
-        cellFactory = _ => new TableCell[Task, Boolean] {
+        cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
+        cellFactory = _ ⇒ new TableCell[Task, Boolean] {
           alignment = Pos.Center
-          item.onChange((_, _, p) =>
+          item.onChange((_, _, p) ⇒
             if(p) {
               graphic = new HBox {
                 children = List(
                   new Button("Delete") {
-                    onAction = (ae: ActionEvent) => {
+                    onAction = (ae: ActionEvent) ⇒ {
                       val ti = taskTableModel.get(index.value).id.getOrElse(0)
 
                       if(index.value < taskTableModel.length) {
@@ -89,7 +89,7 @@ class TaskStage extends VStage {
   }
 
   val addButton = new Button("Add") {
-    onAction = (_:ActionEvent) => {
+    onAction = (_:ActionEvent) ⇒ {
       val task = Task(nameTextField.getText)
 
       TaskTable.Add(task)
@@ -103,8 +103,8 @@ class TaskStage extends VStage {
   }
 
   val searchButton = new Button("Search") {
-    onAction = (_:ActionEvent) => {
-      val name     = if(nameSearchTextField.getText.length > 0) Some(nameSearchTextField.getText) else None
+    onAction = (_:ActionEvent) ⇒ {
+      val name     = if(nameSearchTextField.getText.nonEmpty) Some(nameSearchTextField.getText) else None
       val taskList = TaskTable.find(name)
 
       taskTableModel.clear()
@@ -113,7 +113,7 @@ class TaskStage extends VStage {
   }
 
   val refreshButton = new Button("Refresh") {
-    onAction = (_:ActionEvent) => refreshTableView
+    onAction = (_:ActionEvent) ⇒ refreshTableView
   }
 
   val hbox = new HBox {

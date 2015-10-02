@@ -2,12 +2,12 @@ name := "db-sample"
 
 version := "0.1"
 
-scalaVersion := "2.11.6"
+scalaVersion := "2.11.7"
 
 libraryDependencies ++= Seq(
-    "org.scalafx"            %% "scalafx"         % "8.0.40-R8",
-    "org.scala-lang.modules" %% "scala-pickling"  % "0.10.0",
-    "com.novocode"            % "junit-interface" % "0.11" % "test"
+  "org.scalafx"            %% "scalafx"         % "8.0.60-R9",
+  "org.scala-lang.modules" %% "scala-pickling"  % "0.10.1",
+  "com.novocode"            % "junit-interface" % "0.11" % "test"
 )
 
 resolvers ++= Seq(

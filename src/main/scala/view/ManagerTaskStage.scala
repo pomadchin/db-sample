@@ -14,7 +14,7 @@ import scalafx.scene.text.Font
 import scalafx.util.converter._
 import scalafx.beans.property._
 import scalafx.Includes._
-import scalafx.stage.Stage
+
 
 class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
 
@@ -25,7 +25,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
   val taskIds = ManagerTaskTable.GetTargetIds(managerId.getOrElse(0))
 
   val taskTableModel = new ObservableBuffer[Task]
-  taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
+  taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).nonEmpty)
 
   title = "Scala db Sample"
   val label = new Label("Manager Task Table") {
@@ -110,7 +110,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
 
       val allTaskIds = TaskTable.list.map(_.id.getOrElse(0))
 
-      if((allTaskIds intersect List(taskId)).length > 0)
+      if((allTaskIds intersect List(taskId)).nonEmpty)
         ManagerTaskTable.AddLink(managerId.getOrElse(0), taskId)
 
       refreshTableView
@@ -146,7 +146,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
     val taskIds = ManagerTaskTable.list.filter(_.sourceId == managerId.getOrElse(0)).map(_.targetId)
 
     taskTableModel.clear()
-    taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).length > 0)
+    taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).nonEmpty)
 
     nameTextField.clear()
     idTextField.clear()

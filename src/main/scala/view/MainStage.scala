@@ -16,47 +16,47 @@ import scalafx.beans.property._
 import scalafx.Includes._
 import scalafx.animation._
 
-class MainStage extends PrimaryStage { outer =>
+class MainStage extends PrimaryStage { outer ⇒
 
-  val stages = Map(
-    "EmployeeTable"          -> new EmployeeStage(),
-    "ManagerTable"           -> new ManagerStage(),
-    "TaskTable"              -> new TaskStage(),
-    "EmployeeTaskILinkTable" -> new IEmployeeTaskStage(),
-    "ManagerTaskILinkTable"  -> new IManagerTaskStage()
+  lazy val stages = Map(
+    "EmployeeTable"          → new EmployeeStage(),
+    "ManagerTable"           → new ManagerStage(),
+    "TaskTable"              → new TaskStage(),
+    "EmployeeTaskILinkTable" → new IEmployeeTaskStage(),
+    "ManagerTaskILinkTable"  → new IManagerTaskStage()
   )
 
-  val emptyModel = new ObservableBuffer[String]
+  lazy val emptyModel = new ObservableBuffer[String]
   emptyModel ++= List[String]()
 
   title = "Scala db Sample"
-  val emptyLabel = new Label(" ") {
+  lazy val emptyLabel = new Label(" ") {
     font = Font("Arial", 20)
   }
 
-  val emptyLabel2 = new Label(" ") {
+  lazy val emptyLabel2 = new Label(" ") {
     font = Font("Arial", 20)
   }
 
-  val emptyLabel3 = new Label(" ") {
+  lazy val emptyLabel3 = new Label(" ") {
     font = Font("Arial", 18)
   }
 
-  val signLabel = new Label ("Apache License Version 2.0") {
+  lazy val signLabel = new Label ("Apache License Version 2.0") {
     font = Font("Arial", 10)
   }
 
-  val labelList = new Label("Table List") {
+  lazy val labelList = new Label("Table List") {
     font = Font("Arial", 20)
   }
 
   // empty table
-  val emptyTable = new TableView[String](emptyModel) {
+  lazy val emptyTable = new TableView[String](emptyModel) {
     columns ++= List(
       new TableColumn[String, String] {
         text = " "
-        cellValueFactory = { _ => new StringProperty(this, "", "") }
-        cellFactory = _ => new TextFieldTableCell[String, String] (new DefaultStringConverter)
+        cellValueFactory = { _ ⇒ new StringProperty(this, "", "") }
+        cellFactory = _ ⇒ new TextFieldTableCell[String, String] (new DefaultStringConverter)
         prefWidth = 680
       }
     )
@@ -75,7 +75,7 @@ class MainStage extends PrimaryStage { outer =>
 
     items = ObservableBuffer(stages.keys.toList.sortBy(_.toLowerCase))
     selectionModel().selectionMode = SelectionMode.SINGLE
-    onMouseClicked = (evt: MouseEvent) => {
+    onMouseClicked = (evt: MouseEvent) ⇒ {
       lazy val fadeInTransition = new FadeTransition {
         duration = Duration(500)
         node = emptyVBox
@@ -93,11 +93,7 @@ class MainStage extends PrimaryStage { outer =>
         padding = Insets(10, 10, 10, 10)
       }
 
-      outer.scene = new Scene {
-        content = new VBox{
-          content = mHBox
-        }
-      }
+      outer.scene.value.content = mHBox
 
       lazy val fadeOutTransition = new FadeTransition {
         duration = Duration(500)
@@ -110,13 +106,13 @@ class MainStage extends PrimaryStage { outer =>
 
   }
 
-  val mainVBox = new VBox {
+  lazy val mainVBox = new VBox {
     children = List(labelList, tableList, signLabel)
     spacing = 10
     margin = Insets(10, 10, 10, 10)
   }
 
-  val mHBox = new HBox {
+  lazy val mHBox = new HBox {
     children = List(mainVBox, emptyVBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)

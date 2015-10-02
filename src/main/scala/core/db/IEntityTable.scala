@@ -20,7 +20,7 @@ trait IEntityTable[T <: Identifiable] { outer =>
    * @return Идентификатор, присвоенный объекту
    */
   def Add(obj: T): Int = {
-    if(list.length > 0) {
+    if(list.nonEmpty) {
       obj.id = Option(list.last.id.getOrElse(0) + 1)
     } else {
       obj.id = Option(0)

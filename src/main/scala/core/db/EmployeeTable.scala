@@ -6,39 +6,38 @@ import scala.pickling.Defaults._
 import scala.pickling._
 import binary._
 import java.io.File
+import scala.util.{Try, Success, Failure}
 
 object EmployeeTable extends IEntityTable[Employee] {
   def write: Unit = {
-    try {
+    Try {
       Files.write(Paths.get(fileName), list.pickle.value)
-    } catch {
-      case e: Exception => {
-        var f = false
-        try {
-          f = new File("tmp/").mkdir
-        } catch {
-          case e: Exception => println("Can't create tmp/ dir.")
-        }
-
-        if(f) write
+    } match {
+      case Success(v) ⇒ { }
+      case Failure(e) ⇒ Try {
+        new File("tmp/").mkdir
+      } match {
+        case Success(v) ⇒ write
+        case Failure(e) ⇒ println("Can't create tmp dir.")
       }
     }
   }
 
   def read = {
-    try {
+    Try {
       list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[Employee]]
-    } catch {
-      case e: Exception => write
+    } match {
+      case Success(v) ⇒ { }
+      case Failure(e) ⇒ write
     }
   }
 
   def find(pair: (Option[String], Option[Double]) = (None, None)): List[Employee] = {
     pair match {
-      case (Some(name), Some(salary)) => list.filter(e => e.fio == name && e.salary == salary)
-      case (Some(name), None)         => list.filter(e => e.fio == name)
-      case (None, Some(salary))       => list.filter(e => e.salary == salary)
-      case (None, None)               => List[Employee]()
+      case (Some(name), Some(salary)) ⇒ list.filter(e ⇒ e.fio == name && e.salary == salary)
+      case (Some(name), None)         ⇒ list.filter(e ⇒ e.fio == name)
+      case (None, Some(salary))       ⇒ list.filter(e ⇒ e.salary == salary)
+      case (None, None)               ⇒ List[Employee]()
     }
   }
 
@@ -46,7 +45,6 @@ object EmployeeTable extends IEntityTable[Employee] {
     EmployeeTable.Delete(id)
 
     // cascade remove
-    EmployeeTaskTable.GetTargetIds(id).foreach(t => EmployeeTaskTable.DeleteLink(id, t))
+    EmployeeTaskTable.GetTargetIds(id).foreach(t ⇒ EmployeeTaskTable.DeleteLink(id, t))
   }
-
 }

@@ -10,7 +10,6 @@ import scalafx.scene.layout._
 import scalafx.scene.control._
 import scalafx.scene.text.Font
 import scalafx.util.converter._
-import scalafx.stage.Stage
 
 class IManagerTaskStage extends VStage {
 
@@ -37,13 +36,13 @@ class IManagerTaskStage extends VStage {
       new TableColumn[ManagerTask, String] {
         text = "Source Id"
         cellValueFactory = { _.value.vSourceId }
-        cellFactory = _ => new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
+        cellFactory = _ ⇒ new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
         prefWidth = 340
       },
       new TableColumn[ManagerTask, String] {
         text = "Target Id"
         cellValueFactory = { _.value.vTargetId }
-        cellFactory = _ => new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
+        cellFactory = _ ⇒ new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
         prefWidth = 340
       }
     )
