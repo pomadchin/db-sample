@@ -2,19 +2,19 @@ package core.db
 import scala.language.postfixOps
 
 /**
- * Таблица связей между объектами
+ * Object relations trait
  *
- * T -- Тип связей, хранящихся в таблице
+ * T -- Relations type
  */
-trait ILinkTable[T <: ILink] { outer =>
+trait ILinkTable[T <: ILink] { outer ⇒
   val fileName = "tmp/" + outer.getClass.getName.split("\\$").last
 
   var list = List[T]()
 
   /**
-   * Добавление связи
+   * Add a relation
    *
-   * @param link Добавляемая связь
+   * @param link Relation
    */
   def AddLink(link: T) = {
     DeleteLink(link.sourceId, link.targetId)
@@ -23,49 +23,47 @@ trait ILinkTable[T <: ILink] { outer =>
   }
 
   /**
-   * Добавление связи
+   * Add a relation
    *
-   * @param sourceId Идентификатор первого объекта (источника связи)
-   * @param targetId Идентификатор второго объекта
+   * @param sourceId Id of the first relation (source)
+   * @param targetId Id of the second relation
    */
   def AddLink(sourceId: Int, targetId: Int)
 
   /**
-   * Удаление связи
+   * Delete a relation
    *
-   * @param sourceId Идентификатор первого объекта (источника связи)
-   * @param targetId Идентификатор второго объекта
+   * @param sourceId Id of the first relation (source)
+   * @param targetId Id of the second relation
    */
   def DeleteLink(sourceId: Int, targetId: Int) =
-    list = list filter (e => e.sourceId != sourceId || e.targetId != targetId)
+    list = list filter (e ⇒ e.sourceId != sourceId || e.targetId != targetId)
 
   /**
-   * Получение списка идентификаторов объектов, связанных с указанным источником
+   * Get id list in relations with the source
    *
-   * @param sourceId Идентификатор источника
-   * @return Список идентификаторов
+   * @param sourceId Id of the source
+   * @return List of ids
    */
   def GetTargetIds(sourceId: Int): List[Int] =
     list filter (_.sourceId == sourceId) map (_.targetId)
 
   /**
-   * Получение идентификатора источника
-   * по идентификатору одного из
-   * связанных с ним объектов
+   * Get ids of the source by one of its relational objects ids
    *
-   * @param targetId Идентификатор связанного объекта
-   * @return Идентификатор источника
+   * @param targetId Id of the target
+   * @return Id of the source
    */
   def GetSourceId(targetId: Int): Int =
     list filter (_.targetId == targetId) map (_.sourceId) head
 
   /**
-   * Получение объекта-связи
+   * Get the relation
    *
-   * @param sourceId Идентификатор первого объекта (источника связи)
-   * @param targetId Идентификатор второго объекта
-   * @return Объект связи
+   * @param sourceId Id of the first relation (source)
+   * @param targetId Id of the second relation
+   * @return Relation object
    */
   def GetLink(sourceId: Int, targetId: Int): T =
-    list filter (e => (e.sourceId == sourceId) && (e.targetId == targetId)) head
+    list filter (e ⇒ (e.sourceId == sourceId) && (e.targetId == targetId)) head
 }

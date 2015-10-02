@@ -1,7 +1,7 @@
 package core.db
 
 /**
- * Интерфейс для связей между объектами
+ * Table relations trait
  */
 trait ILink {
   val sourceId: Int

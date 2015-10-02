@@ -53,7 +53,7 @@ class IManagerTaskStage extends VStage {
     children = List(label, table, emptyLabel, emptyLabel2)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
-    opacity = 0.0
+    opacity = 0d
   }
 
   scene = new Scene {

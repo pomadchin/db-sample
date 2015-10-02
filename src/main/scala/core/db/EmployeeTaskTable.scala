@@ -1,8 +1,5 @@
 package core.db
 
-import core.db.EmployeeTable._
-import core.models.Employee
-
 import scala.pickling.Defaults._
 import scala.pickling._
 import binary._

@@ -3,10 +3,9 @@ package core.db
 import scala.language.postfixOps
 
 /**
- * Интерфейс основной таблицы,
- * хранящей список объектов
+ * Base table trait
  *
- * T - Тип объектов, хранимых в таблице
+ * T - Table object type
  */
 trait IEntityTable[T <: Identifiable] { outer =>
   val fileName = "tmp/" + outer.getClass.getName.split("\\$").last
@@ -14,10 +13,10 @@ trait IEntityTable[T <: Identifiable] { outer =>
   var list: List[T] = List[T]()
 
   /**
-   * Добавление объекта в таблицу
+   * Add object in the table
    *
-   * @param obj Добавляемый объект
-   * @return Идентификатор, присвоенный объекту
+   * @param obj Object to be inserted
+   * @return Object id
    */
   def Add(obj: T): Int = {
     if(list.nonEmpty) {
@@ -31,19 +30,17 @@ trait IEntityTable[T <: Identifiable] { outer =>
   }
 
   /**
-   * Получение объекта по его
-   * идентификатору
+   * Get object by its id
    *
-   * @param id Идентификатор объекта
-   * @return Полученный объект либо null, если указанный объект не найден
+   * @param id Object id
+   * @return Object of type T
    */
   def Get(id: Int): T = list.filter(_.id.getOrElse(0) == id) head
 
   /**
-   * Удаление объекта по его
-   * идентификатору
+   * Delete object by its id
    *
-   * @param id Идентификатор удаляемого объекта
+   * @param id Id of object to be deleted
    */
   def Delete(id: Int) = list = list.filter(_.id.getOrElse(0) != id)
 

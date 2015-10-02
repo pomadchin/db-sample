@@ -8,7 +8,7 @@ import scalafx.collections.ObservableBuffer
 class DBTests {
 
   @Before
-  def initTestEmployeeTableFunctions= {
+  def initTestEmployeeTableFunctions = {
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
     TaskTable.list = List[Task]()
@@ -16,12 +16,12 @@ class DBTests {
     EmployeeTaskTable.list = List[EmployeeTask]()
   }
   @Test
-  def testEmployeeTableFunctions {
+  def testEmployeeTableFunctions = {
 
-    val e0 = Employee("e0", 0.0)
-    val e1 = Employee("e1", 1.0)
-    val e2 = Employee("e2", 2.0)
-    val e3 = Employee("e1", 2.0)
+    val e0 = Employee("e0", 0d)
+    val e1 = Employee("e1", 1d)
+    val e2 = Employee("e2", 2d)
+    val e3 = Employee("e1", 2d)
 
     EmployeeTable.Add(e0)
     e0.id = Some(0)
@@ -42,23 +42,23 @@ class DBTests {
     assertEquals(List(e0, e1, e2, e3), EmployeeTable.list)
 
     assertEquals(
-      List(e1, e3), EmployeeTable.find(Option("e1") -> None)
+      List(e1, e3), EmployeeTable.find(Option("e1") → None)
     )
 
     assertEquals(
-      List(e2, e3), EmployeeTable.find(None -> Option(2.0))
+      List(e2, e3), EmployeeTable.find(None → Option(2d))
     )
 
     assertEquals(
-      List(e1), EmployeeTable.find(Option("e1") -> Option(1.0))
+      List(e1), EmployeeTable.find(Option("e1") → Option(1d))
     )
 
     assertEquals(
-      List(), EmployeeTable.find(None -> None)
+      List(), EmployeeTable.find(None → None)
     )
 
     assertEquals(
-      List(), EmployeeTable.find(Option("e123") -> None)
+      List(), EmployeeTable.find(Option("e123") → None)
     )
 
     EmployeeTable.Delete(1)
@@ -81,7 +81,7 @@ class DBTests {
     EmployeeTaskTable.list = List[EmployeeTask]()
   }
   @Test
-  def testManagerTableFunctions {
+  def testManagerTableFunctions = {
 
     val m0 = Manager("m0", "p0")
     val m1 = Manager("m1", "p1")
@@ -107,23 +107,23 @@ class DBTests {
     assertEquals(List(m0, m1, m2, m3), ManagerTable.list)
 
     assertEquals(
-      List(m1, m3), ManagerTable.find(Option("m1") -> None)
+      List(m1, m3), ManagerTable.find(Option("m1") → None)
     )
 
     assertEquals(
-      List(m2, m3), ManagerTable.find(None -> Option("p2"))
+      List(m2, m3), ManagerTable.find(None → Option("p2"))
     )
 
     assertEquals(
-      List(m1), ManagerTable.find(Option("m1") -> Option("p1"))
+      List(m1), ManagerTable.find(Option("m1") → Option("p1"))
     )
 
     assertEquals(
-      List(), ManagerTable.find(None -> None)
+      List(), ManagerTable.find(None → None)
     )
 
     assertEquals(
-      List(), ManagerTable.find(Option("m123") -> None)
+      List(), ManagerTable.find(Option("m123") → None)
     )
 
     ManagerTable.Delete(1)
@@ -146,7 +146,7 @@ class DBTests {
     EmployeeTaskTable.list = List[EmployeeTask]()
   }
   @Test
-  def testTaskTableFunctions {
+  def testTaskTableFunctions = {
     
     val t0 = Task("t0")
     val t1 = Task("t1")
@@ -199,7 +199,7 @@ class DBTests {
   }
 
   @Before
-  def initTestEmployeeTaskTableFunctions= {
+  def initTestEmployeeTaskTableFunctions = {
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
     TaskTable.list = List[Task]()
@@ -207,7 +207,7 @@ class DBTests {
     EmployeeTaskTable.list = List[EmployeeTask]()
   }
   @Test
-  def testEmployeeTaskTableFunctions {
+  def testEmployeeTaskTableFunctions = {
 
     EmployeeTaskTable.AddLink(0,0)
     EmployeeTaskTable.AddLink(EmployeeTask(1,0))
@@ -250,7 +250,7 @@ class DBTests {
     EmployeeTaskTable.list = List[EmployeeTask]()
   }
   @Test
-  def testManagerTaskTableFunctions {
+  def testManagerTaskTableFunctions = {
 
     ManagerTaskTable.AddLink(0,0)
     ManagerTaskTable.AddLink(ManagerTask(1,0))
@@ -293,14 +293,14 @@ class DBTests {
     EmployeeTaskTable.list = List[EmployeeTask]()
   }
   @Test
-  def testTableCascadeFunctions {
+  def testTableCascadeFunctions = {
     val managerTableModel = new ObservableBuffer[Manager]
     val employeeTableModel = new ObservableBuffer[Employee]
 
-    val e0 = Employee("e0", 0.0)
-    val e1 = Employee("e1", 1.0)
-    val e2 = Employee("e2", 2.0)
-    val e3 = Employee("e1", 2.0)
+    val e0 = Employee("e0", 0d)
+    val e1 = Employee("e1", 1d)
+    val e2 = Employee("e2", 2d)
+    val e3 = Employee("e1", 2d)
 
     val m0 = Manager("m0", "p0")
     val m1 = Manager("m1", "p1")
@@ -359,9 +359,9 @@ class DBTests {
     ManagerTaskTable.AddLink(2,2)
     ManagerTaskTable.AddLink(2,3)
 
-    assertEquals(5.0, ManagerTable.sumSalary(2, managerTableModel), 0.0)
+    assertEquals(5d, ManagerTable.sumSalary(2, managerTableModel), 0d)
 
-    assertEquals(3.0, ManagerTable.sumSalary(1, managerTableModel), 0.0)
+    assertEquals(3d, ManagerTable.sumSalary(1, managerTableModel), 0d)
 
     ManagerTable.DeleteCascade(2)
     assertEquals(List(ManagerTask(0,0), ManagerTask(1,0)), ManagerTaskTable.list)

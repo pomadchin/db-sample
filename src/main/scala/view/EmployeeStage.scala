@@ -114,7 +114,7 @@ class EmployeeStage extends VStage {
 
   val addButton = new Button("Add") {
     onAction = (_:ActionEvent) ⇒ {
-      val salary = if(isNumeric(salaryTextField.getText)) salaryTextField.getText.toDouble else 0.0
+      val salary = if(isNumeric(salaryTextField.getText)) salaryTextField.getText.toDouble else 0d
       val employee = Employee(fioTextField.getText, salary)
 
       EmployeeTable.Add(employee)
@@ -161,7 +161,7 @@ class EmployeeStage extends VStage {
     children = List(label, table, hbox, hSearchBox)
     spacing = 10
     padding = Insets(10, 10, 10, 10)
-    opacity = 0.0
+    opacity = 0d
   }
 
   scene = new Scene {
