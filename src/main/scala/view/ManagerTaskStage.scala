@@ -37,13 +37,13 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
       new TableColumn[Task, String] {
         text = "Id"
         cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellFactory = (_: TableColumn[Task, String]) => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Task, String] {
         text = "Name"
         cellValueFactory = { _.value.vName }
-        cellFactory = _ => new TextFieldTableCell[Task, String] (new DefaultStringConverter())
+        cellFactory = (_: TableColumn[Task, String]) => new TextFieldTableCell[Task, String] (new DefaultStringConverter())
         onEditCommit = (evt: CellEditEvent[Task, String]) => {
           val employee = evt.rowValue
           val newLastFioVal = evt.newValue
@@ -56,7 +56,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
       new TableColumn[Task, Boolean] {
         text = "Action"
         cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
-        cellFactory = _ => new TableCell[Task, Boolean] {
+        cellFactory = (_: TableColumn[Task, Boolean]) => new TableCell[Task, Boolean] {
           alignment = Pos.Center
           item.onChange((_, _, p) =>
             if(p) {

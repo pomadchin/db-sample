@@ -34,13 +34,13 @@ class EmployeeStage extends VStage {
       new TableColumn[Employee, String] {
         text = "Id"
         cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ ⇒ new TextFieldTableCell[Employee, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellFactory = (_: TableColumn[Employee, String]) ⇒ new TextFieldTableCell[Employee, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Employee, String] {
         text = "Name"
         cellValueFactory = { _.value.vFio }
-        cellFactory = _ ⇒ new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[Employee, String]) ⇒ new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Employee, String]) ⇒ {
           val employee = evt.rowValue
           val newLastFioVal = evt.newValue
@@ -53,7 +53,7 @@ class EmployeeStage extends VStage {
       new TableColumn[Employee, String] {
         text = "Salary"
         cellValueFactory = { _.value.vSalary }
-        cellFactory = _ ⇒ new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[Employee, String]) ⇒ new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Employee, String]) ⇒ {
           val employee = evt.rowValue
           val newLastSalaryVal = evt.newValue
@@ -66,7 +66,7 @@ class EmployeeStage extends VStage {
       new TableColumn[Employee, Boolean] {
         text = "Action"
         cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
-        cellFactory = _ ⇒ new TableCell[Employee, Boolean] {
+        cellFactory = (_: TableColumn[Employee, Boolean]) ⇒ new TableCell[Employee, Boolean] {
           alignment = Pos.Center
           item.onChange((_, _, p) ⇒
             if(p) {

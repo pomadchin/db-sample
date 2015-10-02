@@ -36,13 +36,13 @@ class IEmployeeTaskStage extends VStage {
       new TableColumn[EmployeeTask, String] {
         text = "Source Id"
         cellValueFactory = { _.value.vSourceId }
-        cellFactory = _ ⇒ new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[EmployeeTask, String]) ⇒ new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
         prefWidth = 340
       },
       new TableColumn[EmployeeTask, String] {
         text = "Target Id"
         cellValueFactory = { _.value.vTargetId }
-        cellFactory = _ ⇒ new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[EmployeeTask, String]) ⇒ new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
         prefWidth = 340
       }
     )

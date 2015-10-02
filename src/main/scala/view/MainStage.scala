@@ -56,7 +56,7 @@ class MainStage extends PrimaryStage { outer ⇒
       new TableColumn[String, String] {
         text = " "
         cellValueFactory = { _ ⇒ new StringProperty(this, "", "") }
-        cellFactory = _ ⇒ new TextFieldTableCell[String, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[String, String]) ⇒ new TextFieldTableCell[String, String] (new DefaultStringConverter)
         prefWidth = 680
       }
     )

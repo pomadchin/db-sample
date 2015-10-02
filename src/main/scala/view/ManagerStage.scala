@@ -39,13 +39,13 @@ class ManagerStage extends VStage {
       new TableColumn[Manager, String] {
         text = "Id"
         cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = _ ⇒ new TextFieldTableCell[Manager, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellFactory = (_: TableColumn[Manager, String]) ⇒ new TextFieldTableCell[Manager, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Manager, String] {
         text = "Name"
         cellValueFactory = { _.value.vFio }
-        cellFactory = _ ⇒ new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[Manager, String]) ⇒ new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Manager, String]) ⇒ {
           val manager = evt.rowValue
           val newLastFioVal = evt.newValue
@@ -58,7 +58,7 @@ class ManagerStage extends VStage {
       new TableColumn[Manager, String] {
         text = "Position"
         cellValueFactory = { _.value.vPosition }
-        cellFactory = _ ⇒ new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
+        cellFactory = (_: TableColumn[Manager, String]) ⇒ new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
         onEditCommit = (evt: CellEditEvent[Manager, String]) ⇒ {
           val manager = evt.rowValue
           val newLastPositionVal = evt.newValue
@@ -71,7 +71,7 @@ class ManagerStage extends VStage {
       new TableColumn[Manager, Boolean] {
         text = "Action"
         cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
-        cellFactory = _ ⇒ new TableCell[Manager, Boolean] {
+        cellFactory = (_: TableColumn[Manager, Boolean]) ⇒ new TableCell[Manager, Boolean] {
           alignment = Pos.Center
           item.onChange((_, _, p) ⇒
             if(p) {
