@@ -185,3 +185,7 @@ class EmployeeStage extends VStage {
     salarySearchTextField.clear()
   }
 }
+
+object EmployeeStage {
+  def apply() = new EmployeeStage()
+}

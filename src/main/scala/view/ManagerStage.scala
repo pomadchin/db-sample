@@ -212,3 +212,7 @@ class ManagerStage extends VStage {
     positionSearchTextField.clear()
   }
 }
+
+object ManagerStage {
+  def apply() = new ManagerStage()
+}

@@ -151,3 +151,7 @@ class TaskStage extends VStage {
     nameSearchTextField.clear()
   }
 }
+
+object TaskStage {
+  def apply() = new TaskStage()
+}

@@ -19,11 +19,11 @@ import scalafx.animation._
 class MainStage extends PrimaryStage { outer ⇒
 
   lazy val stages = Map(
-    "EmployeeTable"          → new EmployeeStage(),
-    "ManagerTable"           → new ManagerStage(),
-    "TaskTable"              → new TaskStage(),
-    "EmployeeTaskILinkTable" → new IEmployeeTaskStage(),
-    "ManagerTaskILinkTable"  → new IManagerTaskStage()
+    "EmployeeTable"          → EmployeeStage.apply _,
+    "ManagerTable"           → ManagerStage.apply _,
+    "TaskTable"              → TaskStage.apply _,
+    "EmployeeTaskILinkTable" → IEmployeeTaskStage.apply _,
+    "ManagerTaskILinkTable"  → IManagerTaskStage.apply _
   )
 
   lazy val emptyModel = new ObservableBuffer[String]
@@ -84,7 +84,7 @@ class MainStage extends PrimaryStage { outer ⇒
       }
       fadeInTransition.play()
 
-      lazy val stage = stages(selectionModel().selectedItem.value)
+      lazy val stage = stages(selectionModel().selectedItem.value)()
       stage.refreshTableView
 
       lazy val mHBox = new HBox {
@@ -121,4 +121,8 @@ class MainStage extends PrimaryStage { outer ⇒
   scene = new Scene {
     content = mHBox
   }
+}
+
+object MainStage {
+  def apply() = new MainStage()
 }

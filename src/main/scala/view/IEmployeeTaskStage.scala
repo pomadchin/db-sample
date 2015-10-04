@@ -67,3 +67,7 @@ class IEmployeeTaskStage extends VStage {
     employeeTaskTableModel ++= EmployeeTaskTable.list
   }
 }
+
+object IEmployeeTaskStage {
+  def apply() = new IEmployeeTaskStage()
+}

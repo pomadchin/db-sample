@@ -67,3 +67,7 @@ class IManagerTaskStage extends VStage {
     managerTaskTableModel ++= ManagerTaskTable.list
   }
 }
+
+object IManagerTaskStage {
+  def apply() = new IManagerTaskStage()
+}

@@ -151,3 +151,7 @@ class EmployeeTaskStage(employeeId: Option[Int] = None) extends VStage {
     idTextField.clear()
   }
 }
+
+object EmployeeTaskStage {
+  def apply() = new EmployeeTaskStage()
+}

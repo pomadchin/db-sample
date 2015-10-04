@@ -151,3 +151,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
     idTextField.clear()
   }
 }
+
+object ManagerTaskStage {
+  def apply() = new ManagerTaskStage()
+}
