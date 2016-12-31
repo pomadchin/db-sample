@@ -74,7 +74,7 @@ class MainStage extends PrimaryStage { outer ⇒
     prefWidth = 180
 
     items = ObservableBuffer(stages.keys.toList.sortBy(_.toLowerCase))
-    selectionModel().selectionMode = SelectionMode.SINGLE
+    selectionModel().selectionMode = SelectionMode.Single
     onMouseClicked = (evt: MouseEvent) ⇒ {
       lazy val fadeInTransition = new FadeTransition {
         duration = Duration(500)
