@@ -1,9 +1,10 @@
 package core.db
 
 import core.models._
+
+import scalafx.collections.ObservableBuffer
 import org.junit._
 import org.junit.Assert._
-import scalafx.collections.ObservableBuffer
 
 class DBTests {
 

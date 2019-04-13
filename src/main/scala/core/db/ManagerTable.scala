@@ -1,10 +1,9 @@
 package core.db
 
 import core.models._
+import upickle.default._
+
 import java.nio.file.{Paths, Files}
-import scala.pickling.Defaults._
-import scala.pickling._
-import binary._
 import java.io.File
 import scala.util.{Failure, Success, Try}
 import scalafx.collections.ObservableBuffer
@@ -12,7 +11,7 @@ import scalafx.collections.ObservableBuffer
 object ManagerTable extends IEntityTable[Manager] {
   def write: Unit = {
     Try {
-      Files.write(Paths.get(fileName), list.pickle.value)
+      Files.write(Paths.get(fileName), writeBinary(list))
     } match {
       case Success(v) ⇒ { }
       case Failure(e) ⇒ Try {
@@ -26,7 +25,7 @@ object ManagerTable extends IEntityTable[Manager] {
 
   def read = {
     Try {
-      list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[Manager]]
+      list = readBinary[List[Manager]](Files.readAllBytes(Paths.get(fileName)))
     } match {
       case Success(v) ⇒ { }
       case Failure(e) ⇒ write

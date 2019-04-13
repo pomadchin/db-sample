@@ -1,8 +1,7 @@
 package core.db
 
-import scala.pickling.Defaults._
-import scala.pickling._
-import binary._
+import upickle.default._
+
 import java.nio.file.{Files, Paths}
 import java.io.File
 import scala.util.{Failure, Success, Try}
@@ -17,7 +16,7 @@ object ManagerTaskTable extends ILinkTable[ManagerTask] {
 
   def write: Unit = {
     Try {
-      Files.write(Paths.get(fileName), list.pickle.value)
+      Files.write(Paths.get(fileName), writeBinary(list))
     } match {
       case Success(v) ⇒ { }
       case Failure(e) ⇒ Try {
@@ -31,7 +30,7 @@ object ManagerTaskTable extends ILinkTable[ManagerTask] {
 
   def read = {
     Try {
-      list = BinaryPickle(Files.readAllBytes(Paths.get(fileName))).unpickle[List[ManagerTask]]
+      list = readBinary[List[ManagerTask]](Files.readAllBytes(Paths.get(fileName)))
     } match {
       case Success(v) ⇒ { }
       case Failure(e) ⇒ write
