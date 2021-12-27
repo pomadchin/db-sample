@@ -1,29 +1,31 @@
 package view
 
-import scalafx.application.JFXApp.PrimaryStage
+import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.collections.ObservableBuffer
-import scalafx.scene.input._
-import scalafx.geometry._
+import scalafx.scene.input.*
+import scalafx.geometry.*
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
-import scalafx.util._
-import scalafx.beans.property._
-import scalafx.Includes._
-import scalafx.animation._
+import scalafx.util.converter.*
+import scalafx.util.*
+import scalafx.beans.property.*
+import scalafx.Includes.*
+import scalafx.animation.*
 
-class MainStage extends PrimaryStage { outer ⇒
+class MainStage extends PrimaryStage:
+
+  def outer = this
 
   lazy val stages = Map(
-    "EmployeeTable"          → EmployeeStage.apply _,
-    "ManagerTable"           → ManagerStage.apply _,
-    "TaskTable"              → TaskStage.apply _,
-    "EmployeeTaskILinkTable" → IEmployeeTaskStage.apply _,
-    "ManagerTaskILinkTable"  → IManagerTaskStage.apply _
+    "EmployeeTable"          -> EmployeeStage.apply _,
+    "ManagerTable"           -> ManagerStage.apply _,
+    "TaskTable"              -> TaskStage.apply _,
+    "EmployeeTaskILinkTable" -> IEmployeeTaskStage.apply _,
+    "ManagerTaskILinkTable"  -> IManagerTaskStage.apply _
   )
 
   lazy val emptyModel = new ObservableBuffer[String]
@@ -42,7 +44,7 @@ class MainStage extends PrimaryStage { outer ⇒
     font = Font("Arial", 18)
   }
 
-  lazy val signLabel = new Label ("Apache License Version 2.0") {
+  lazy val signLabel = new Label("Apache License Version 2.0") {
     font = Font("Arial", 10)
   }
 
@@ -55,12 +57,12 @@ class MainStage extends PrimaryStage { outer ⇒
     columns ++= List(
       new TableColumn[String, String] {
         text = " "
-        cellValueFactory = { _ ⇒ new StringProperty(this, "", "") }
-        cellFactory = (_: TableColumn[String, String]) ⇒ new TextFieldTableCell[String, String] (new DefaultStringConverter)
+        cellValueFactory = { _ => new StringProperty(this, "", "") }
+        cellFactory = (_: TableColumn[String, String]) => new TextFieldTableCell[String, String](new DefaultStringConverter)
         prefWidth = 680
       }
     )
-    //editable = true
+    // editable = true
   }
 
   // empty layer
@@ -73,9 +75,9 @@ class MainStage extends PrimaryStage { outer ⇒
   val tableList: ListView[String] = new ListView[String] {
     prefWidth = 180
 
-    items = ObservableBuffer(stages.keys.toList.sortBy(_.toLowerCase))
+    items = ObservableBuffer(stages.keys.toList.sortBy(_.toLowerCase): _*)
     selectionModel().selectionMode = SelectionMode.Single
-    onMouseClicked = (evt: MouseEvent) ⇒ {
+    onMouseClicked = (evt: MouseEvent) => {
       lazy val fadeInTransition = new FadeTransition {
         duration = Duration(500)
         node = emptyVBox
@@ -121,8 +123,6 @@ class MainStage extends PrimaryStage { outer ⇒
   scene = new Scene {
     content = mHBox
   }
-}
 
-object MainStage {
+object MainStage:
   def apply() = new MainStage()
-}

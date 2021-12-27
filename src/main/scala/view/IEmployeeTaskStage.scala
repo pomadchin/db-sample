@@ -1,17 +1,17 @@
 package view
 
-import core.db._
+import core.db.*
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
+import scalafx.util.converter.*
 
-class IEmployeeTaskStage extends VStage {
+class IEmployeeTaskStage extends VStage:
 
   EmployeeTaskTable.read
 
@@ -35,18 +35,18 @@ class IEmployeeTaskStage extends VStage {
     columns ++= List(
       new TableColumn[EmployeeTask, String] {
         text = "Source Id"
-        cellValueFactory = { _.value.vSourceId }
-        cellFactory = (_: TableColumn[EmployeeTask, String]) ⇒ new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
+        cellValueFactory = _.value.vSourceId
+        cellFactory = (_: TableColumn[EmployeeTask, String]) => new TextFieldTableCell[EmployeeTask, String](new DefaultStringConverter)
         prefWidth = 340
       },
       new TableColumn[EmployeeTask, String] {
         text = "Target Id"
-        cellValueFactory = { _.value.vTargetId }
-        cellFactory = (_: TableColumn[EmployeeTask, String]) ⇒ new TextFieldTableCell[EmployeeTask, String] (new DefaultStringConverter)
+        cellValueFactory = _.value.vTargetId
+        cellFactory = (_: TableColumn[EmployeeTask, String]) => new TextFieldTableCell[EmployeeTask, String](new DefaultStringConverter)
         prefWidth = 340
       }
     )
-    //editable = true
+    // editable = true
   }
 
   val vbox = new VBox {
@@ -60,14 +60,11 @@ class IEmployeeTaskStage extends VStage {
     content = vbox
   }
 
-  def refreshTableView = {
+  def refreshTableView =
     EmployeeTaskTable.read
 
     employeeTaskTableModel.clear()
     employeeTaskTableModel ++= EmployeeTaskTable.list
-  }
-}
 
-object IEmployeeTaskStage {
+object IEmployeeTaskStage:
   def apply() = new IEmployeeTaskStage()
-}

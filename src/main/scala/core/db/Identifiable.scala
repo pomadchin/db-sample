@@ -1,5 +1,4 @@
 package core.db
 
-trait Identifiable {
+trait Identifiable:
   var id: Option[Int] = None
-}

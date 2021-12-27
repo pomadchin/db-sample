@@ -1,6 +1,60 @@
-project/project
-project/target
+# Operating System Files
+
+*.DS_Store
+Thumbs.db
+
+# Build Files
+
+bin
 target
-tmp
+build/
+.gradle
+cmake-build-debug
+
+# Eclipse Project Files
+
+.classpath
+.project
+.settings
+
+# IntelliJ IDEA Files
+
+*.iml
+*.ipr
+*.iws
+*.idea
+
+# Spring Bootstrap artifacts
+
+dependency-reduced-pom.xml
+README.html
+
+# Sublime files
+
+*.sublime-workspace
+
+# VSCode files
+
+.vscode
 .history
-.idea
+
+# Metals
+
+.metals
+.bloop
+metals.sbt
+
+# SBT
+
+.bsp
+
+# Test data files #
+
+java/data
+tmp
+
+# Compiled libs #
+
+java/*.dylib
+java/*.so
+java/*dll

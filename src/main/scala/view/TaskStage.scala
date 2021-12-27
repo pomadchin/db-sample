@@ -1,21 +1,21 @@
 package view
 
-import core.db._
-import core.models._
+import core.db.*
+import core.models.*
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
-import scalafx.geometry.{Pos, Insets}
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
-import scalafx.beans.property._
-import scalafx.Includes._
+import scalafx.util.converter.*
+import scalafx.beans.property.*
+import scalafx.Includes.*
 
-class TaskStage extends VStage {
+class TaskStage extends VStage:
 
   TaskTable.read
   EmployeeTaskTable.read
@@ -33,16 +33,16 @@ class TaskStage extends VStage {
     columns ++= List(
       new TableColumn[Task, String] {
         text = "Id"
-        cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = (_: TableColumn[Task, String]) ⇒ new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = (_: TableColumn[Task, String]) => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Task, String] {
         text = "Name"
-        cellValueFactory = { _.value.vName }
-        cellFactory = (_: TableColumn[Task, String]) ⇒ new TextFieldTableCell[Task, String] (new DefaultStringConverter())
-        onEditCommit = (evt: CellEditEvent[Task, String]) ⇒ {
-          val task = evt.rowValue
+        cellValueFactory = _.value.vName
+        cellFactory = (_: TableColumn[Task, String]) => new TextFieldTableCell[Task, String](new DefaultStringConverter())
+        onEditCommit = (evt: CellEditEvent[Task, String]) => {
+          val task       = evt.rowValue
           val newNameVal = evt.newValue
           // Update current person data set
           println(task.toString + " " + newNameVal)
@@ -52,35 +52,36 @@ class TaskStage extends VStage {
       },
       new TableColumn[Task, Boolean] {
         text = "Action"
-        cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
-        cellFactory = (_: TableColumn[Task, Boolean]) ⇒ new TableCell[Task, Boolean] {
-          alignment = Pos.Center
-          item.onChange((_, _, p) ⇒
-            if(p) {
-              graphic = new HBox {
-                children = List(
-                  new Button("Delete") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      val ti = taskTableModel.get(index.value).id.getOrElse(0)
+        cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
+        cellFactory = (_: TableColumn[Task, Boolean]) =>
+          new TableCell[Task, Boolean] {
+            alignment = Pos.Center
+            item.onChange((_, _, p) =>
+              if (p) {
+                graphic = new HBox {
+                  children = List(
+                    new Button("Delete") {
+                      onAction = (ae: ActionEvent) => {
+                        val ti = taskTableModel.get(index.value).id.getOrElse(0)
 
-                      if(index.value < taskTableModel.length) {
-                        TaskTable.DeleteCascade(ti)
-                        refreshTableView
+                        if (index.value < taskTableModel.length) {
+                          TaskTable.DeleteCascade(ti)
+                          refreshTableView
+                        }
                       }
                     }
-                  }
-                )
-                spacing = 10
-                alignment = Pos.Center
-                //padding = Insets(10, 10, 10, 10)
+                  )
+                  spacing = 10
+                  alignment = Pos.Center
+                  // padding = Insets(10, 10, 10, 10)
+                }
               }
-            }
-          )
-        }
+            )
+          }
         prefWidth = 320
       }
     )
-    //editable = true
+    // editable = true
   }
 
   val nameTextField = new TextField {
@@ -89,7 +90,7 @@ class TaskStage extends VStage {
   }
 
   val addButton = new Button("Add") {
-    onAction = (_:ActionEvent) ⇒ {
+    onAction = (_: ActionEvent) => {
       val task = Task(nameTextField.getText)
 
       TaskTable.Add(task)
@@ -103,8 +104,8 @@ class TaskStage extends VStage {
   }
 
   val searchButton = new Button("Search") {
-    onAction = (_:ActionEvent) ⇒ {
-      val name     = if(nameSearchTextField.getText.nonEmpty) Some(nameSearchTextField.getText) else None
+    onAction = (_: ActionEvent) => {
+      val name     = if (nameSearchTextField.getText.nonEmpty) Some(nameSearchTextField.getText) else None
       val taskList = TaskTable.find(name)
 
       taskTableModel.clear()
@@ -113,7 +114,7 @@ class TaskStage extends VStage {
   }
 
   val refreshButton = new Button("Refresh") {
-    onAction = (_:ActionEvent) ⇒ refreshTableView
+    onAction = (_: ActionEvent) => refreshTableView
   }
 
   val hbox = new HBox {
@@ -136,7 +137,7 @@ class TaskStage extends VStage {
     content = vbox
   }
 
-  def refreshTableView = {
+  def refreshTableView =
     TaskTable.write
     EmployeeTaskTable.write
     ManagerTaskTable.write
@@ -149,9 +150,6 @@ class TaskStage extends VStage {
 
     nameTextField.clear()
     nameSearchTextField.clear()
-  }
-}
 
-object TaskStage {
+object TaskStage:
   def apply() = new TaskStage()
-}

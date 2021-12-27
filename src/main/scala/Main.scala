@@ -1,6 +1,5 @@
-import scalafx.application.JFXApp
-import view._
+import scalafx.application.JFXApp3
+import view.*
 
-object Main extends JFXApp {
-  stage = MainStage()
-}
+object Main extends JFXApp3:
+  override def start(): Unit = stage = MainStage()

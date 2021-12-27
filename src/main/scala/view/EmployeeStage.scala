@@ -1,21 +1,21 @@
 package view
 
-import core.db._
-import core.models._
+import core.db.*
+import core.models.*
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
-import scalafx.geometry.{Pos, Insets}
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
-import scalafx.beans.property._
-import scalafx.Includes._
+import scalafx.util.converter.*
+import scalafx.beans.property.*
+import scalafx.Includes.*
 
-class EmployeeStage extends VStage {
+class EmployeeStage extends VStage:
 
   EmployeeTable.read
   EmployeeTaskTable.read
@@ -33,16 +33,17 @@ class EmployeeStage extends VStage {
     columns ++= List(
       new TableColumn[Employee, String] {
         text = "Id"
-        cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = (_: TableColumn[Employee, String]) ⇒ new TextFieldTableCell[Employee, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = (_: TableColumn[Employee, String]) => new TextFieldTableCell[Employee, String] { alignment = Pos.Center };
+        new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Employee, String] {
         text = "Name"
-        cellValueFactory = { _.value.vFio }
-        cellFactory = (_: TableColumn[Employee, String]) ⇒ new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
-        onEditCommit = (evt: CellEditEvent[Employee, String]) ⇒ {
-          val employee = evt.rowValue
+        cellValueFactory = _.value.vFio
+        cellFactory = (_: TableColumn[Employee, String]) => new TextFieldTableCell[Employee, String](new DefaultStringConverter)
+        onEditCommit = (evt: CellEditEvent[Employee, String]) => {
+          val employee      = evt.rowValue
           val newLastFioVal = evt.newValue
           // Update current person data set
           println(employee.toString + " " + newLastFioVal)
@@ -52,10 +53,10 @@ class EmployeeStage extends VStage {
       },
       new TableColumn[Employee, String] {
         text = "Salary"
-        cellValueFactory = { _.value.vSalary }
-        cellFactory = (_: TableColumn[Employee, String]) ⇒ new TextFieldTableCell[Employee, String] (new DefaultStringConverter)
-        onEditCommit = (evt: CellEditEvent[Employee, String]) ⇒ {
-          val employee = evt.rowValue
+        cellValueFactory = _.value.vSalary
+        cellFactory = (_: TableColumn[Employee, String]) => new TextFieldTableCell[Employee, String](new DefaultStringConverter)
+        onEditCommit = (evt: CellEditEvent[Employee, String]) => {
+          val employee         = evt.rowValue
           val newLastSalaryVal = evt.newValue
           // Update current person data set
           println(employee.toString + " " + newLastSalaryVal)
@@ -65,41 +66,42 @@ class EmployeeStage extends VStage {
       },
       new TableColumn[Employee, Boolean] {
         text = "Action"
-        cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
-        cellFactory = (_: TableColumn[Employee, Boolean]) ⇒ new TableCell[Employee, Boolean] {
-          alignment = Pos.Center
-          item.onChange((_, _, p) ⇒
-            if(p) {
-              graphic = new HBox {
-                children = List(
-                  new Button("Delete") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      val ei = employeeTableModel.get(index.value).id.getOrElse(0)
+        cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
+        cellFactory = (_: TableColumn[Employee, Boolean]) =>
+          new TableCell[Employee, Boolean] {
+            alignment = Pos.Center
+            item.onChange((_, _, p) =>
+              if (p) {
+                graphic = new HBox {
+                  children = List(
+                    new Button("Delete") {
+                      onAction = (ae: ActionEvent) => {
+                        val ei = employeeTableModel.get(index.value).id.getOrElse(0)
 
-                      if(index.value < employeeTableModel.length) {
-                        EmployeeTable.DeleteCascade(ei)
-                        refreshTableView
+                        if (index.value < employeeTableModel.length) {
+                          EmployeeTable.DeleteCascade(ei)
+                          refreshTableView
+                        }
+                      }
+                    },
+                    new Button("Add Tasks") {
+                      onAction = (ae: ActionEvent) => {
+                        val tasksStage = new EmployeeTaskStage(employeeTableModel.get(index.value).id)
+                        tasksStage.show()
                       }
                     }
-                  },
-                  new Button("Add Tasks") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      val tasksStage = new EmployeeTaskStage(employeeTableModel.get(index.value).id)
-                      tasksStage.show()
-                    }
-                  }
-                )
-                spacing = 10
-                alignment = Pos.Center
-                //padding = Insets(10, 10, 10, 10)
+                  )
+                  spacing = 10
+                  alignment = Pos.Center
+                  // padding = Insets(10, 10, 10, 10)
+                }
               }
-            }
-          )
-        }
+            )
+          }
         prefWidth = 280
       }
     )
-    //editable = true
+    // editable = true
   }
 
   val fioTextField = new TextField {
@@ -113,8 +115,8 @@ class EmployeeStage extends VStage {
   }
 
   val addButton = new Button("Add") {
-    onAction = (_:ActionEvent) ⇒ {
-      val salary = if(isNumeric(salaryTextField.getText)) salaryTextField.getText.toDouble else 0d
+    onAction = (_: ActionEvent) => {
+      val salary   = if (isNumeric(salaryTextField.getText)) salaryTextField.getText.toDouble else 0d
       val employee = Employee(fioTextField.getText, salary)
 
       EmployeeTable.Add(employee)
@@ -133,9 +135,9 @@ class EmployeeStage extends VStage {
   }
 
   val searchButton = new Button("Search") {
-    onAction = (_:ActionEvent) ⇒ {
-      val salary = if(isNumeric(salarySearchTextField.getText)) Some(salarySearchTextField.getText.toDouble) else None
-      val name   = if(fioSearchTextField.getText.nonEmpty) Some(fioSearchTextField.getText) else None
+    onAction = (_: ActionEvent) => {
+      val salary       = if (isNumeric(salarySearchTextField.getText)) Some(salarySearchTextField.getText.toDouble) else None
+      val name         = if (fioSearchTextField.getText.nonEmpty) Some(fioSearchTextField.getText) else None
       val employeeList = EmployeeTable.find(name → salary)
 
       employeeTableModel.clear()
@@ -144,7 +146,7 @@ class EmployeeStage extends VStage {
   }
 
   val refreshButton = new Button("Refresh") {
-    onAction = (_:ActionEvent) ⇒ refreshTableView
+    onAction = (_: ActionEvent) => refreshTableView
   }
 
   val hbox = new HBox {
@@ -184,8 +186,6 @@ class EmployeeStage extends VStage {
     fioSearchTextField.clear()
     salarySearchTextField.clear()
   }
-}
 
-object EmployeeStage {
+object EmployeeStage:
   def apply() = new EmployeeStage()
-}

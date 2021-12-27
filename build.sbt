@@ -1,25 +1,32 @@
 name := "db-sample"
 
-version := "0.3.1-SNAPSHOT"
+version := "0.4.1-SNAPSHOT"
 
-scalaVersion := "2.12.8"
+scalaVersion := "3.1.0"
 
-crossScalaVersions := Seq("2.12.8", "2.11.12")
+crossScalaVersions := Seq("2.13.7")
 
 libraryDependencies ++= Seq(
-  "org.scalafx" %% "scalafx"         % "8.0.181-R13",
-  "com.lihaoyi" %% "upickle"         % "0.7.1",
+  "org.scalafx" %% "scalafx"         % "17.0.1-R26",
+  "com.lihaoyi" %% "upickle"         % "1.4.3",
   "com.novocode" % "junit-interface" % "0.11" % Test
 )
 
-resolvers ++= Seq(
-  "Sonatype OSS Releases"  at "http://oss.sonatype.org/content/repositories/releases/",
-  "Sonatype OSS Snapshots" at "http://oss.sonatype.org/content/repositories/snapshots/"
-)
+// Determine OS version of JavaFX binaries
+lazy val osName = System.getProperty("os.name") match {
+  case n if n.startsWith("Linux")   => "linux"
+  case n if n.startsWith("Mac")     => "mac"
+  case n if n.startsWith("Windows") => "win"
+  case _                            => throw new Exception("Unknown platform!")
+}
+
+// Add dependency on JavaFX libraries, OS dependent
+lazy val javaFXModules = Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+libraryDependencies ++= javaFXModules.map(m => "org.openjfx" % s"javafx-$m" % "17" classifier osName)
 
 // Run in separate VM, so there are no issues with double initialization of JavaFX
 fork := true
 
-fork in Test := true
+Test / fork := true
 
 scalacOptions ++= Seq("-feature", "-deprecation")

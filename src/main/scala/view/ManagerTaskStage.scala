@@ -1,21 +1,21 @@
 package view
 
-import core.db._
-import core.models._
+import core.db.*
+import core.models.*
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
-import scalafx.geometry.{Pos, Insets}
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
-import scalafx.beans.property._
-import scalafx.Includes._
+import scalafx.util.converter.*
+import scalafx.beans.property.*
+import scalafx.Includes.*
 
-class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
+class ManagerTaskStage(managerId: Option[Int] = None) extends VStage:
 
   ManagerTable.read
   ManagerTaskTable.read
@@ -24,7 +24,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
   val taskIds = ManagerTaskTable.GetTargetIds(managerId.getOrElse(0))
 
   val taskTableModel = new ObservableBuffer[Task]
-  taskTableModel ++= TaskTable.list.filter(t ⇒ (List(t.id.getOrElse(0)) intersect taskIds).nonEmpty)
+  taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).nonEmpty)
 
   title = "Scala db Sample"
   val label = new Label("Manager Task Table") {
@@ -35,16 +35,16 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
     columns ++= List(
       new TableColumn[Task, String] {
         text = "Id"
-        cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = (_: TableColumn[Task, String]) ⇒ new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = (_: TableColumn[Task, String]) => new TextFieldTableCell[Task, String] { alignment = Pos.Center }; new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Task, String] {
         text = "Name"
-        cellValueFactory = { _.value.vName }
-        cellFactory = (_: TableColumn[Task, String]) ⇒ new TextFieldTableCell[Task, String] (new DefaultStringConverter())
-        onEditCommit = (evt: CellEditEvent[Task, String]) ⇒ {
-          val employee = evt.rowValue
+        cellValueFactory = _.value.vName
+        cellFactory = (_: TableColumn[Task, String]) => new TextFieldTableCell[Task, String](new DefaultStringConverter())
+        onEditCommit = (evt: CellEditEvent[Task, String]) => {
+          val employee      = evt.rowValue
           val newLastFioVal = evt.newValue
           // Update current person data set
           println(employee.toString + " " + newLastFioVal)
@@ -54,34 +54,34 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
       },
       new TableColumn[Task, Boolean] {
         text = "Action"
-        cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
-        cellFactory = (_: TableColumn[Task, Boolean]) ⇒ new TableCell[Task, Boolean] {
-          alignment = Pos.Center
-          item.onChange((_, _, p) ⇒
-            if(p) {
-              graphic = new HBox {
-                children = List(
-                  new Button("Delete") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      if(index.value < taskTableModel.length) {
-                        ManagerTaskTable.DeleteLink(managerId.getOrElse(0), taskTableModel.get(index.value).id.getOrElse(0))
-                        TaskTable.Delete(taskTableModel.get(index.value).id.getOrElse(0))
-                        refreshTableView
-                      }
+        cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
+        cellFactory = (_: TableColumn[Task, Boolean]) =>
+          new TableCell[Task, Boolean] {
+            alignment = Pos.Center
+            item.onChange((_, _, p) =>
+              if (p) {
+                graphic = new HBox {
+                  children = List(
+                    new Button("Delete") {
+                      onAction = (ae: ActionEvent) =>
+                        if (index.value < taskTableModel.length) {
+                          ManagerTaskTable.DeleteLink(managerId.getOrElse(0), taskTableModel.get(index.value).id.getOrElse(0))
+                          TaskTable.Delete(taskTableModel.get(index.value).id.getOrElse(0))
+                          refreshTableView
+                        }
                     }
-                  }
-                )
-                spacing = 10
-                alignment = Pos.Center
-                //padding = Insets(10, 10, 10, 10)
+                  )
+                  spacing = 10
+                  alignment = Pos.Center
+                  // padding = Insets(10, 10, 10, 10)
+                }
               }
-            }
-          )
-        }
+            )
+          }
         prefWidth = 180
       }
     )
-    //editable = true
+    // editable = true
   }
 
   val nameTextField = new TextField {
@@ -95,7 +95,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
   }
 
   val addButton = new Button("Add") {
-    onAction = (_:ActionEvent) ⇒ {
+    onAction = (_: ActionEvent) => {
       val task = Task(nameTextField.getText)
       ManagerTaskTable.AddLink(managerId.getOrElse(0), TaskTable.Add(task))
 
@@ -104,12 +104,12 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
   }
 
   val addIdButton = new Button("Add") {
-    onAction = (_:ActionEvent) ⇒ {
-      val taskId = if(isAllDigits(idTextField.getText)) idTextField.getText.toInt else 0
+    onAction = (_: ActionEvent) => {
+      val taskId = if (isAllDigits(idTextField.getText)) idTextField.getText.toInt else 0
 
       val allTaskIds = TaskTable.list.map(_.id.getOrElse(0))
 
-      if((allTaskIds intersect List(taskId)).nonEmpty)
+      if ((allTaskIds intersect List(taskId)).nonEmpty)
         ManagerTaskTable.AddLink(managerId.getOrElse(0), taskId)
 
       refreshTableView
@@ -136,7 +136,7 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
     content = vbox
   }
 
-  def refreshTableView = {
+  def refreshTableView =
     TaskTable.write
     ManagerTaskTable.write
     TaskTable.read
@@ -145,13 +145,10 @@ class ManagerTaskStage(managerId: Option[Int] = None) extends VStage {
     val taskIds = ManagerTaskTable.list.filter(_.sourceId == managerId.getOrElse(0)).map(_.targetId)
 
     taskTableModel.clear()
-    taskTableModel ++= TaskTable.list.filter(t ⇒ (List(t.id.getOrElse(0)) intersect taskIds).nonEmpty)
+    taskTableModel ++= TaskTable.list.filter(t => (List(t.id.getOrElse(0)) intersect taskIds).nonEmpty)
 
     nameTextField.clear()
     idTextField.clear()
-  }
-}
 
-object ManagerTaskStage {
+object ManagerTaskStage:
   def apply() = new ManagerTaskStage()
-}

@@ -1,17 +1,17 @@
 package view
 
-import core.db._
+import core.db.*
 import scalafx.collections.ObservableBuffer
 import scalafx.geometry.Insets
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
+import scalafx.util.converter.*
 
-class IManagerTaskStage extends VStage {
+class IManagerTaskStage extends VStage:
 
   ManagerTaskTable.read
 
@@ -35,18 +35,18 @@ class IManagerTaskStage extends VStage {
     columns ++= List(
       new TableColumn[ManagerTask, String] {
         text = "Source Id"
-        cellValueFactory = { _.value.vSourceId }
-        cellFactory = (_: TableColumn[ManagerTask, String]) ⇒ new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
+        cellValueFactory = _.value.vSourceId
+        cellFactory = (_: TableColumn[ManagerTask, String]) => new TextFieldTableCell[ManagerTask, String](new DefaultStringConverter)
         prefWidth = 340
       },
       new TableColumn[ManagerTask, String] {
         text = "Target Id"
-        cellValueFactory = { _.value.vTargetId }
-        cellFactory = (_: TableColumn[ManagerTask, String]) ⇒ new TextFieldTableCell[ManagerTask, String] (new DefaultStringConverter)
+        cellValueFactory = _.value.vTargetId
+        cellFactory = (_: TableColumn[ManagerTask, String]) => new TextFieldTableCell[ManagerTask, String](new DefaultStringConverter)
         prefWidth = 340
       }
     )
-    //editable = true
+    // editable = true
   }
 
   val vbox = new VBox {
@@ -60,14 +60,11 @@ class IManagerTaskStage extends VStage {
     content = vbox
   }
 
-  def refreshTableView = {
+  def refreshTableView =
     ManagerTaskTable.read
 
     managerTaskTableModel.clear()
     managerTaskTableModel ++= ManagerTaskTable.list
-  }
-}
 
-object IManagerTaskStage {
+object IManagerTaskStage:
   def apply() = new IManagerTaskStage()
-}

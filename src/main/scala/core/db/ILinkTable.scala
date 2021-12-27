@@ -6,44 +6,49 @@ import scala.language.postfixOps
  *
  * T -- Relations type
  */
-trait ILinkTable[T <: ILink] { outer ⇒
-  val fileName = "tmp/" + outer.getClass.getName.split("\\$").last
+trait ILinkTable[T <: ILink]:
+  val fileName = "tmp/" + this.getClass.getName.split("\\$").last
 
   var list = List[T]()
 
   /**
    * Add a relation
    *
-   * @param link Relation
+   * @param link
+   *   Relation
    */
-  def AddLink(link: T) = {
+  def AddLink(link: T) =
     DeleteLink(link.sourceId, link.targetId)
-
     list = list :+ link
-  }
 
   /**
    * Add a relation
    *
-   * @param sourceId Id of the first relation (source)
-   * @param targetId Id of the second relation
+   * @param sourceId
+   *   Id of the first relation (source)
+   * @param targetId
+   *   Id of the second relation
    */
-  def AddLink(sourceId: Int, targetId: Int)
+  def AddLink(sourceId: Int, targetId: Int): Unit
 
   /**
    * Delete a relation
    *
-   * @param sourceId Id of the first relation (source)
-   * @param targetId Id of the second relation
+   * @param sourceId
+   *   Id of the first relation (source)
+   * @param targetId
+   *   Id of the second relation
    */
-  def DeleteLink(sourceId: Int, targetId: Int) =
-    list = list filter (e ⇒ e.sourceId != sourceId || e.targetId != targetId)
+  def DeleteLink(sourceId: Int, targetId: Int): Unit =
+    list = list filter (e => e.sourceId != sourceId || e.targetId != targetId)
 
   /**
    * Get id list in relations with the source
    *
-   * @param sourceId Id of the source
-   * @return List of ids
+   * @param sourceId
+   *   Id of the source
+   * @return
+   *   List of ids
    */
   def GetTargetIds(sourceId: Int): List[Int] =
     list filter (_.sourceId == sourceId) map (_.targetId)
@@ -51,8 +56,10 @@ trait ILinkTable[T <: ILink] { outer ⇒
   /**
    * Get ids of the source by one of its relational objects ids
    *
-   * @param targetId Id of the target
-   * @return Id of the source
+   * @param targetId
+   *   Id of the target
+   * @return
+   *   Id of the source
    */
   def GetSourceId(targetId: Int): Int =
     list filter (_.targetId == targetId) map (_.sourceId) head
@@ -60,10 +67,12 @@ trait ILinkTable[T <: ILink] { outer ⇒
   /**
    * Get the relation
    *
-   * @param sourceId Id of the first relation (source)
-   * @param targetId Id of the second relation
-   * @return Relation object
+   * @param sourceId
+   *   Id of the first relation (source)
+   * @param targetId
+   *   Id of the second relation
+   * @return
+   *   Relation object
    */
   def GetLink(sourceId: Int, targetId: Int): T =
-    list filter (e ⇒ (e.sourceId == sourceId) && (e.targetId == targetId)) head
-}
+    list filter (e => (e.sourceId == sourceId) && (e.targetId == targetId)) head

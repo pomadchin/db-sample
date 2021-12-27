@@ -1,22 +1,22 @@
 package view
 
-import core.db._
-import core.models._
+import core.db.*
+import core.models.*
 import scalafx.collections.ObservableBuffer
 import scalafx.event.ActionEvent
-import scalafx.geometry.{Pos, Insets}
+import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.control.cell.TextFieldTableCell
 import scalafx.scene.Scene
-import scalafx.scene.control.TableColumn._
-import scalafx.scene.layout._
-import scalafx.scene.control._
+import scalafx.scene.control.TableColumn.*
+import scalafx.scene.layout.*
+import scalafx.scene.control.*
 import scalafx.scene.text.Font
-import scalafx.util.converter._
-import scalafx.beans.property._
-import scalafx.Includes._
+import scalafx.util.converter.*
+import scalafx.beans.property.*
+import scalafx.Includes.*
 import scalafx.stage.Stage
 
-class ManagerStage extends VStage {
+class ManagerStage extends VStage:
 
   ManagerTable.read
   EmployeeTable.read
@@ -38,16 +38,17 @@ class ManagerStage extends VStage {
     columns ++= List(
       new TableColumn[Manager, String] {
         text = "Id"
-        cellValueFactory = { c ⇒ new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
-        cellFactory = (_: TableColumn[Manager, String]) ⇒ new TextFieldTableCell[Manager, String] { alignment = Pos.Center }; new DefaultStringConverter
+        cellValueFactory = { c => new StringProperty(this, "id", c.value.id.getOrElse(0).toString) }
+        cellFactory = (_: TableColumn[Manager, String]) => new TextFieldTableCell[Manager, String] { alignment = Pos.Center };
+        new DefaultStringConverter
         prefWidth = 40
       },
       new TableColumn[Manager, String] {
         text = "Name"
-        cellValueFactory = { _.value.vFio }
-        cellFactory = (_: TableColumn[Manager, String]) ⇒ new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
-        onEditCommit = (evt: CellEditEvent[Manager, String]) ⇒ {
-          val manager = evt.rowValue
+        cellValueFactory = _.value.vFio
+        cellFactory = (_: TableColumn[Manager, String]) => new TextFieldTableCell[Manager, String](new DefaultStringConverter)
+        onEditCommit = (evt: CellEditEvent[Manager, String]) => {
+          val manager       = evt.rowValue
           val newLastFioVal = evt.newValue
           // Update current person data set
           println(manager.toString + " " + newLastFioVal)
@@ -57,10 +58,10 @@ class ManagerStage extends VStage {
       },
       new TableColumn[Manager, String] {
         text = "Position"
-        cellValueFactory = { _.value.vPosition }
-        cellFactory = (_: TableColumn[Manager, String]) ⇒ new TextFieldTableCell[Manager, String] (new DefaultStringConverter)
-        onEditCommit = (evt: CellEditEvent[Manager, String]) ⇒ {
-          val manager = evt.rowValue
+        cellValueFactory = _.value.vPosition
+        cellFactory = (_: TableColumn[Manager, String]) => new TextFieldTableCell[Manager, String](new DefaultStringConverter)
+        onEditCommit = (evt: CellEditEvent[Manager, String]) => {
+          val manager            = evt.rowValue
           val newLastPositionVal = evt.newValue
           // Update current person data set
           println(manager.toString + " " + newLastPositionVal)
@@ -70,65 +71,65 @@ class ManagerStage extends VStage {
       },
       new TableColumn[Manager, Boolean] {
         text = "Action"
-        cellValueFactory = { e ⇒ ObjectProperty[Boolean](e.value != null) }
-        cellFactory = (_: TableColumn[Manager, Boolean]) ⇒ new TableCell[Manager, Boolean] {
-          alignment = Pos.Center
-          item.onChange((_, _, p) ⇒
-            if(p) {
-              graphic = new HBox {
-                children = List(
-                  new Button("Delete") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      val mi = managerTableModel.get(index.value).id.getOrElse(0)
+        cellValueFactory = { e => ObjectProperty[Boolean](e.value != null) }
+        cellFactory = (_: TableColumn[Manager, Boolean]) =>
+          new TableCell[Manager, Boolean] {
+            alignment = Pos.Center
+            item.onChange((_, _, p) =>
+              if (p) {
+                graphic = new HBox {
+                  children = List(
+                    new Button("Delete") {
+                      onAction = (ae: ActionEvent) => {
+                        val mi = managerTableModel.get(index.value).id.getOrElse(0)
 
-                      if(index.value < managerTableModel.length) {
-                        ManagerTable.DeleteCascade(mi)
-                        refreshTableView
-                      }
-                    }
-                  },
-                  new Button("Add Tasks") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      val tasksStage = new ManagerTaskStage(managerTableModel.get(index.value).id)
-                      tasksStage.show()
-                    }
-                  },
-                  new Button("Sum Salary") {
-                    onAction = (ae: ActionEvent) ⇒ {
-                      if(index.value < managerTableModel.length) {
-                        val sumSalary: Double = ManagerTable.sumSalary(index.value, managerTableModel)
-
-                        val label = new Label("Manager employees sum salary: " + sumSalary) {
-                          font = Font("Arial", 15)
+                        if (index.value < managerTableModel.length) {
+                          ManagerTable.DeleteCascade(mi)
+                          refreshTableView
                         }
+                      }
+                    },
+                    new Button("Add Tasks") {
+                      onAction = (ae: ActionEvent) => {
+                        val tasksStage = new ManagerTaskStage(managerTableModel.get(index.value).id)
+                        tasksStage.show()
+                      }
+                    },
+                    new Button("Sum Salary") {
+                      onAction = (ae: ActionEvent) =>
+                        if (index.value < managerTableModel.length) {
+                          val sumSalary: Double = ManagerTable.sumSalary(index.value, managerTableModel)
 
-                        val stage = new Stage {
-                          title = "Sum Employees Salary"
-                          scene = new Scene {
-                            content = new HBox {
-                              content = label
-                              spacing = 10
-                              padding = Insets(10, 10, 10, 10)
+                          val label = new Label("Manager employees sum salary: " + sumSalary) {
+                            font = Font("Arial", 15)
+                          }
+
+                          val stage = new Stage {
+                            title = "Sum Employees Salary"
+                            scene = new Scene {
+                              content = new HBox {
+                                content = label
+                                spacing = 10
+                                padding = Insets(10, 10, 10, 10)
+                              }
                             }
                           }
-                        }
 
-                        stage.show()
-                      }
+                          stage.show()
+                        }
                     }
-                  }
-                )
-                spacing = 10
-                alignment = Pos.Center
-                //padding = Insets(10, 10, 10, 10)
+                  )
+                  spacing = 10
+                  alignment = Pos.Center
+                  // padding = Insets(10, 10, 10, 10)
+                }
               }
-            }
-          )
-        }
+            )
+          }
         prefWidth = 280
       }
     )
-    //editable = true
+    // editable = true
   }
 
   val fioTextField = new TextField {
@@ -142,7 +143,7 @@ class ManagerStage extends VStage {
   }
 
   val addButton = new Button("Add") {
-    onAction = (_:ActionEvent) ⇒ {
+    onAction = (_: ActionEvent) => {
       val manager = Manager(fioTextField.getText, positionTextField.getText)
 
       ManagerTable.Add(manager)
@@ -161,9 +162,9 @@ class ManagerStage extends VStage {
   }
 
   val searchButton = new Button("Search") {
-    onAction = (_:ActionEvent) ⇒ {
-      val position = if(positionSearchTextField.getText.nonEmpty) Some(positionSearchTextField.getText) else None
-      val name     = if(fioSearchTextField.getText.nonEmpty) Some(fioSearchTextField.getText) else None
+    onAction = (_: ActionEvent) => {
+      val position    = if (positionSearchTextField.getText.nonEmpty) Some(positionSearchTextField.getText) else None
+      val name        = if (fioSearchTextField.getText.nonEmpty) Some(fioSearchTextField.getText) else None
       val managerList = ManagerTable.find(name -> position)
 
       managerTableModel.clear()
@@ -172,7 +173,7 @@ class ManagerStage extends VStage {
   }
 
   val refreshButton = new Button("Refresh") {
-    onAction = (_:ActionEvent) ⇒ refreshTableView
+    onAction = (_: ActionEvent) => refreshTableView
   }
 
   val hbox = new HBox {
@@ -195,7 +196,7 @@ class ManagerStage extends VStage {
     content = vbox
   }
 
-  def refreshTableView = {
+  def refreshTableView =
     ManagerTable.write
     TaskTable.write
     ManagerTaskTable.write
@@ -210,9 +211,6 @@ class ManagerStage extends VStage {
     positionTextField.clear()
     fioSearchTextField.clear()
     positionSearchTextField.clear()
-  }
-}
 
-object ManagerStage {
+object ManagerStage:
   def apply() = new ManagerStage()
-}
