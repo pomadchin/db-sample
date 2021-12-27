@@ -1,4 +1,6 @@
-## Scala db Sample
+## Scala db Sample 
+
+[![CI](https://github.com/pomadchin/db-sample/actions/workflows/ci.yml/badge.svg)](https://github.com/pomadchin/db-sample/actions/workflows/ci.yml)
 
 A small db sample, with a [ScalaFX](https://github.com/scalafx/scalafx-ensemble) GUI.
 

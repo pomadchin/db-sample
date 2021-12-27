@@ -7,7 +7,7 @@ scalaVersion := "3.1.0"
 libraryDependencies ++= Seq(
   "org.scalafx"   %% "scalafx"         % "17.0.1-R26",
   "com.lihaoyi"   %% "upickle"         % "1.4.3",
-  "com.github.sbt" % "junit-interface" % "0.13.2" % Test
+  "com.github.sbt" % "junit-interface" % "0.13.3" % Test
 )
 
 // Determine OS version of JavaFX binaries
