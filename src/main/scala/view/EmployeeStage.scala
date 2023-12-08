@@ -138,7 +138,7 @@ class EmployeeStage extends VStage:
     onAction = (_: ActionEvent) => {
       val salary       = if (isNumeric(salarySearchTextField.getText)) Some(salarySearchTextField.getText.toDouble) else None
       val name         = if (fioSearchTextField.getText.nonEmpty) Some(fioSearchTextField.getText) else None
-      val employeeList = EmployeeTable.find(name → salary)
+      val employeeList = EmployeeTable.find(name -> salary)
 
       employeeTableModel.clear()
       employeeTableModel ++= employeeList
