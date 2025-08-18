@@ -24,6 +24,7 @@ jobs:
         with:
           distribution: ${{ matrix.distribution }}
           java-version: ${{ matrix.java }}
+      - uses: sbt/setup-sbt@v1
 
       - name: Check formatting
         run: sbt scalafmtCheckAll

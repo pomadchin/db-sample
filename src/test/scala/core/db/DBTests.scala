@@ -3,12 +3,12 @@ package core.db
 import core.models.*
 
 import scalafx.collections.ObservableBuffer
-import org.junit.*
-import org.junit.Assert.*
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions.*
 
 class DBTests:
 
-  @Before
+  @BeforeEach
   def initTestEmployeeTableFunctions =
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
@@ -77,7 +77,7 @@ class DBTests:
     EmployeeTable.Delete(3)
     assertEquals(List(), EmployeeTable.list)
 
-  @Before
+  @BeforeEach
   def initTestManagerTableFunctions =
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
@@ -146,7 +146,7 @@ class DBTests:
     ManagerTable.Delete(3)
     assertEquals(List(), ManagerTable.list)
 
-  @Before
+  @BeforeEach
   def initTestTaskTableFunctions =
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
@@ -209,7 +209,7 @@ class DBTests:
     TaskTable.Delete(3)
     assertEquals(List(), TaskTable.list)
 
-  @Before
+  @BeforeEach
   def initTestEmployeeTaskTableFunctions =
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
@@ -256,7 +256,7 @@ class DBTests:
 
     EmployeeTaskTable.list = List[EmployeeTask]()
 
-  @Before
+  @BeforeEach
   def initTestManagerTaskTableFunctions =
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
@@ -303,7 +303,7 @@ class DBTests:
 
     ManagerTaskTable.list = List[ManagerTask]()
 
-  @Before
+  @BeforeEach
   def initTestTableCascadeFunctions =
     EmployeeTable.list = List[Employee]()
     ManagerTable.list = List[Manager]()
